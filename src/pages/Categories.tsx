@@ -3,12 +3,23 @@ import { GlassCard } from '../components/ui/GlassCard';
 import { Camera, Search, Droplets, Monitor, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+// @ts-ignore
+import catCamera from '../assets/images/cat_camera_alt_1782245667138.jpg';
+// @ts-ignore
+import catLens from '../assets/images/cat_lens_alt_1782245681389.jpg';
+// @ts-ignore
+import catDrone from '../assets/images/cat_drone_alt_1782245695507.jpg';
+// @ts-ignore
+import catSwitcher from '../assets/images/cat_switcher_alt_1782245708928.jpg';
+// @ts-ignore
+import catAccessories from '../assets/images/cat_accessories_alt_1782245722740.jpg';
+
 const categories = [
-  { id: '1', name: 'Digital Cameras', slug: 'camera', icon: <Camera size={40} />, count: 15, image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400', desc: 'Mirrorless, DSLR, and Cinema cameras from Sony, Canon, and RED.' },
-  { id: '2', name: 'Premium Lenses', slug: 'lens', icon: <Search size={40} />, count: 28, image: 'https://images.unsplash.com/photo-1617005082133-548c4dd27f35?auto=format&fit=crop&q=80&w=400', desc: 'Prime, zoom, and anamorphic lenses for every mounting system.' },
-  { id: '3', name: 'Pro Drones', slug: 'drone', icon: <Droplets size={40} />, count: 9, image: 'https://images.unsplash.com/photo-1473968512447-ac4307b045d6?auto=format&fit=crop&q=80&w=400', desc: 'DJI Enterprise and consumer drones for aerial cinematography.' },
-  { id: '4', name: 'Video Switchers', slug: 'switcher', icon: <Monitor size={40} />, count: 6, image: 'https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?auto=format&fit=crop&q=80&w=400', desc: 'Blackmagic Design ATEM and multicam switching solutions.' },
-  { id: '5', name: 'Photography Accessories', slug: 'accessories', icon: <Settings size={40} />, count: 42, image: 'https://images.unsplash.com/photo-1495121553079-4c61bbbc19ef?auto=format&fit=crop&q=80&w=400', desc: 'Gimbals, tripods, lighting, and essential studio gear.' },
+  { id: '1', name: 'Digital Cameras', slug: 'camera', icon: <Camera size={40} />, count: 15, image: catCamera, desc: 'Mirrorless, DSLR, and Cinema cameras from Sony, Canon, and RED.' },
+  { id: '2', name: 'Premium Lenses', slug: 'lens', icon: <Search size={40} />, count: 28, image: catLens, desc: 'Prime, zoom, and anamorphic lenses for every mounting system.' },
+  { id: '3', name: 'Pro Drones', slug: 'drone', icon: <Droplets size={40} />, count: 9, image: catDrone, desc: 'DJI Enterprise and consumer drones for aerial cinematography.' },
+  { id: '4', name: 'Video Switchers', slug: 'switcher', icon: <Monitor size={40} />, count: 6, image: catSwitcher, desc: 'Blackmagic Design ATEM and multicam switching solutions.' },
+  { id: '5', name: 'Photography Accessories', slug: 'accessories', icon: <Settings size={40} />, count: 42, image: catAccessories, desc: 'Gimbals, tripods, lighting, and essential studio gear.' },
 ];
 
 export default function Categories() {
@@ -37,7 +48,8 @@ export default function Categories() {
                   <img 
                     src={cat.image} 
                     alt={cat.name} 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700 opacity-80 group-hover:opacity-100"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent" />
                   <div className="absolute bottom-4 left-6 flex items-center gap-3">

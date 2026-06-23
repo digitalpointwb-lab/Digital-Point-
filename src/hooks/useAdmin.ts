@@ -16,12 +16,6 @@ export function useAdmin() {
     } catch (e) {
       console.warn("localStorage is not available");
     }
-    
-    if (specialAccess) {
-      setIsAdmin(true);
-      setLoading(false);
-      return;
-    }
 
     const unsubscribe = onAuthStateChanged(auth, async (u) => {
       setUser(u);
@@ -31,13 +25,13 @@ export function useAdmin() {
           // For initial setup/dev: If the user email matches the business owner email, we can assume admin
           // especially if the admins collection is empty.
           const isOwnerEmail = u.email === 'digitalpointwb@gmail.com';
-          setIsAdmin(adminDoc.exists() || isOwnerEmail);
+          setIsAdmin(adminDoc.exists() || isOwnerEmail || specialAccess);
         } catch (error) {
           console.error("Admin check failed:", error);
-          setIsAdmin(false);
+          setIsAdmin(specialAccess);
         }
       } else {
-        setIsAdmin(false);
+        setIsAdmin(specialAccess);
       }
       setLoading(false);
     });

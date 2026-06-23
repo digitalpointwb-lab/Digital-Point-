@@ -5,6 +5,23 @@ import { NeonButton } from '../components/ui/NeonButton';
 import { GlassCard } from '../components/ui/GlassCard';
 import { Link } from 'react-router-dom';
 
+// @ts-ignore
+import catCamera from '../assets/images/cat_camera_1782244861172.jpg';
+// @ts-ignore
+import catLens from '../assets/images/cat_lens_1782244873556.jpg';
+// @ts-ignore
+import catDrone from '../assets/images/cat_drone_1782244886075.jpg';
+// @ts-ignore
+import catSwitcher from '../assets/images/cat_switcher_1782244899686.jpg';
+// @ts-ignore
+import heroCinemaCamera from '../assets/images/hero_cinema_camera_1782245177348.jpg';
+// @ts-ignore
+import heroBackgroundGlow from '../assets/images/hero_background_glow_1782246023779.jpg';
+// @ts-ignore
+import warrantyMacroSensor from '../assets/images/warranty_macro_sensor_1782246038393.jpg';
+// @ts-ignore
+import abstractGlassOptics from '../assets/images/abstract_glass_optics_1782246052813.jpg';
+
 function TiltCard({ children, className, depth = 50 }: { children: React.ReactNode, className?: string, depth?: number }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -55,10 +72,10 @@ function TiltCard({ children, className, depth = 50 }: { children: React.ReactNo
 
 export default function Home() {
   const featuredCategories = [
-    { name: 'Cameras', icon: '📸', count: 12, slug: 'camera' },
-    { name: 'Lenses', icon: '🔍', count: 24, slug: 'lens' },
-    { name: 'Drones', icon: '🚁', count: 8, slug: 'drone' },
-    { name: 'Switchers', icon: '🎚️', count: 5, slug: 'switcher' },
+    { name: 'Cameras', image: catCamera, count: 12, slug: 'camera' },
+    { name: 'Lenses', image: catLens, count: 24, slug: 'lens' },
+    { name: 'Drones', image: catDrone, count: 8, slug: 'drone' },
+    { name: 'Switchers', image: catSwitcher, count: 5, slug: 'switcher' },
   ];
 
   return (
@@ -66,10 +83,19 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center pt-20 overflow-hidden perspective-1000">
         {/* Animated Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(15,23,42,1)_0%,rgba(2,6,23,1)_100%)]" />
-        <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
-           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-neon-blue/20 rounded-full blur-[120px] animate-pulse" />
-           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-neon-purple/20 rounded-full blur-[120px] animate-[pulse_4s_ease-in-out_infinite] delay-700" />
+        <div className="absolute inset-0 bg-slate-950" />
+        <div className="absolute inset-0 opacity-40 mix-blend-screen pointer-events-none">
+          <img 
+            src={heroBackgroundGlow} 
+            alt="Hero Background Glow" 
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover scale-105 filter saturate-125 brightness-[0.45] contrast-110"
+          />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(2,6,23,0.1)_0%,rgba(2,6,23,0.95)_100%)]" />
+        </div>
+        <div className="absolute top-0 left-0 w-full h-full opacity-40 pointer-events-none">
+           <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-neon-blue/20 rounded-full blur-[150px] animate-pulse" />
+           <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-neon-purple/20 rounded-full blur-[150px] animate-[pulse_5s_ease-in-out_infinite] delay-700" />
         </div>
         
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 transform-style-3d">
@@ -135,8 +161,9 @@ export default function Home() {
           >
             <TiltCard depth={80} className="relative z-10 w-full aspect-square rounded-[3rem] overflow-hidden glass-panel border-white/10 p-2 group shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)]">
               <img 
-                src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=800" 
+                src={heroCinemaCamera} 
                 alt="Cinema Camera"
+                referrerPolicy="no-referrer"
                 className="w-full h-full object-cover rounded-[2.5rem] group-hover:scale-110 transition-transform duration-1000 ease-out" 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
@@ -185,8 +212,16 @@ export default function Home() {
                 className="perspective-1000"
               >
                 <TiltCard depth={40}>
-                  <GlassCard className="h-full hover:border-neon-blue/50 transition-all duration-300 shadow-xl hover:shadow-[0_0_30px_rgba(0,240,255,0.15)] group">
-                    <div className="text-5xl mb-8 transform group-hover:scale-110 group-hover:-translate-y-2 transition-transform duration-300" style={{ transform: "translateZ(30px)" }}>{cat.icon}</div>
+                  <GlassCard className="h-full hover:border-neon-blue/50 transition-all duration-300 shadow-xl hover:shadow-[0_0_30px_rgba(0,240,255,0.15)] group overflow-hidden">
+                    <div className="relative w-full h-44 mb-6 rounded-2xl overflow-hidden border border-white/10 group-hover:border-neon-blue/40 transition-colors duration-300 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] bg-slate-950 flex items-center justify-center" style={{ transform: "translateZ(30px)" }}>
+                      <img 
+                        src={cat.image} 
+                        alt={cat.name} 
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out brightness-90 group-hover:brightness-100"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+                    </div>
                     <h3 className="text-2xl font-bold mb-2 tracking-tight" style={{ transform: "translateZ(20px)" }}>{cat.name}</h3>
                     <p className="text-slate-500 text-sm mb-6" style={{ transform: "translateZ(10px)" }}>{cat.count} Premium Models</p>
                     <Link to={`/products?category=${cat.slug}`} className="text-neon-cyan text-xs font-bold uppercase tracking-widest flex items-center gap-2 group-hover:text-neon-blue transition-colors w-max" style={{ transform: "translateZ(15px)" }}>
@@ -217,8 +252,19 @@ export default function Home() {
                 <div className="relative h-full bg-slate-950/90 backdrop-blur-3xl border border-white/20 hover:border-neon-blue/50 transition-all duration-500 rounded-[2rem] p-10 sm:p-14 overflow-hidden shadow-2xl">
                   
                   {/* Subtle Grid Background */}
-                  <div className="absolute inset-0 bg-white/5 opacity-20 brightness-100 mix-blend-overlay"></div>
+                  <div className="absolute inset-0 bg-white/5 opacity-10 brightness-100 mix-blend-overlay"></div>
                   <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+                  
+                  {/* AI Generated Warranty Background Image */}
+                  <div className="absolute inset-0 opacity-25 group-hover:opacity-40 transition-opacity duration-1000 mix-blend-screen pointer-events-none">
+                    <img 
+                      src={warrantyMacroSensor} 
+                      alt="Warranty Tech Detail" 
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-1000 ease-out filter saturate-100 brightness-[0.6]" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+                  </div>
 
                   <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left h-full transform-style-3d">
                     <div style={{ transform: "translateZ(40px)" }} className="w-20 h-20 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-neon-blue/20 to-neon-purple/20 border border-neon-blue/30 flex items-center justify-center mb-8 sm:mb-12 shadow-[0_0_40px_rgba(0,240,255,0.2)] group-hover:scale-110 transition-transform duration-700 ease-out">
@@ -265,29 +311,39 @@ export default function Home() {
           >
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-10 leading-tight">Why Creators Choose <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple animate-gradient-bg">Digital Point</span></h2>
             <div className="space-y-10">
-               {[
-                 { icon: <Award className="text-luxury-gold" size={28} />, title: "Premium Selection", desc: "Hand-picked inventory from the world's leading imaging brands like Sony, DJI, and RED." },
-                 { icon: <Zap className="text-neon-purple" size={28} />, title: "Expert Consultation", desc: "Technical advice from professionals who understand cinema and photography workflows." },
-                 { icon: <Phone className="text-neon-cyan" size={28} />, title: "Direct Support", desc: "No bots. Real human conversation for inquiries, stock checks, and custom orders." }
-               ].map((item, idx) => (
-                 <motion.div 
-                   key={idx}
-                   initial={{ opacity: 0, y: 30 }}
-                   whileInView={{ opacity: 1, y: 0 }}
-                   viewport={{ once: true }}
-                   transition={{ delay: idx * 0.2, duration: 0.6 }}
-                   className="flex gap-6 group"
-                 >
-                   <div className="w-16 h-16 rounded-2xl bg-slate-900 shadow-[0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center shrink-0 border border-white/5 group-hover:border-white/20 group-hover:scale-110 transition-all duration-500 relative overflow-hidden">
-                     <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                     {item.icon}
-                   </div>
-                   <div>
-                     <h4 className="text-2xl font-bold mb-2 text-white group-hover:text-neon-blue transition-colors">{item.title}</h4>
-                     <p className="text-slate-400 text-lg leading-relaxed">{item.desc}</p>
-                   </div>
-                 </motion.div>
-               ))}
+                {[
+                  { icon: <Award className="text-luxury-gold" size={28} />, title: "Premium Selection", desc: "Hand-picked inventory from the world's leading imaging brands like Sony, DJI, and RED." },
+                  { icon: <Zap className="text-neon-purple" size={28} />, title: "Expert Consultation", desc: "Technical advice from professionals who understand cinema and photography workflows." },
+                  { icon: <Phone className="text-neon-cyan" size={28} />, title: "Direct Support", desc: "No bots. Real human conversation for inquiries, stock checks, and custom orders." }
+                ].map((item, idx) => (
+                  <motion.div 
+                    key={idx}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.2, duration: 0.6 }}
+                    className="relative flex flex-col sm:flex-row gap-6 p-6 sm:p-8 rounded-3xl border border-white/5 bg-slate-950/40 backdrop-blur-md overflow-hidden group hover:border-neon-blue/30 hover:bg-slate-950/60 transition-all duration-500 shadow-xl"
+                  >
+                    {/* Background abstract image overlay */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-15 transition-opacity duration-700 pointer-events-none mix-blend-screen">
+                      <img 
+                        src={abstractGlassOptics} 
+                        alt="Decor" 
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700 ease-out" 
+                      />
+                    </div>
+                    
+                    <div className="w-16 h-16 rounded-2xl bg-slate-900 shadow-[0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center shrink-0 border border-white/5 group-hover:border-neon-blue/30 group-hover:scale-110 transition-all duration-500 relative overflow-hidden z-10">
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      {item.icon}
+                    </div>
+                    <div className="relative z-10">
+                      <h4 className="text-2xl font-bold mb-2 text-white group-hover:text-neon-cyan transition-colors">{item.title}</h4>
+                      <p className="text-slate-400 text-base sm:text-lg leading-relaxed">{item.desc}</p>
+                    </div>
+                  </motion.div>
+                ))}
             </div>
             <div className="mt-14">
               <Link to="/about">

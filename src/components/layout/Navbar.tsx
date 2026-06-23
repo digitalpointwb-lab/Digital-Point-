@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Camera, MessageSquare, Phone, Zap } from 'lucide-react';
+import { Menu, X, Camera, MessageSquare, Phone, Zap, ArrowRight } from 'lucide-react';
 import { NeonButton } from '../ui/NeonButton';
 import { CurrencyToggle } from '../ui/CurrencyToggle';
+
+// @ts-ignore
+import mobileMenuBg from '../../assets/images/mobile_menu_bg_1782246902401.jpg';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,11 +20,11 @@ export function Navbar() {
   }, []);
 
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Products', path: '/products' },
-    { name: 'Categories', path: '/categories' },
-    { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact' },
+    { name: 'Home', path: '/', label: 'Welcome & Highlights', tag: '01 / START' },
+    { name: 'Products', path: '/products', label: 'Discover Cinema Gear', tag: '02 / SHOP' },
+    { name: 'Categories', path: '/categories', label: 'Curated Collections', tag: '03 / BROWSE' },
+    { name: 'About', path: '/about', label: 'Our Heritage & Team', tag: '04 / STORY' },
+    { name: 'Contact', path: '/contact', label: 'Inquire & Connect', tag: '05 / SUPPORT' },
   ];
 
   return (
@@ -108,48 +111,115 @@ export function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-slate-950/95 backdrop-blur-xl md:hidden pt-28 px-6 pb-6 overflow-y-auto"
+            transition={{ duration: 0.4 }}
+            className="fixed inset-0 z-40 bg-slate-950/95 backdrop-blur-2xl md:hidden pt-28 px-6 pb-6 overflow-y-auto flex flex-col justify-between"
           >
-            {/* Background elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-neon-blue/10 blur-[100px] pointer-events-none"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-neon-purple/10 blur-[100px] pointer-events-none"></div>
+            {/* Absolute Background Image Layer */}
+            <div className="absolute inset-0 z-0 opacity-20 pointer-events-none mix-blend-screen overflow-hidden">
+              <motion.img 
+                src={mobileMenuBg} 
+                alt="Mobile Menu Background" 
+                referrerPolicy="no-referrer"
+                initial={{ scale: 1.1, opacity: 0 }}
+                animate={{ scale: 1.0, opacity: 0.25 }}
+                exit={{ scale: 1.1, opacity: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="w-full h-full object-cover filter saturate-150 brightness-[0.5] contrast-125"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-950/80 to-slate-950" />
+            </div>
 
-            <div className="flex flex-col gap-6 relative z-10">
-              {navLinks.map((link, i) => (
-                <motion.div
-                  key={link.path}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  <Link
-                    to={link.path}
-                    onClick={() => setIsOpen(false)}
-                    className={`block text-3xl font-display font-medium ${location.pathname === link.path ? 'text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-cyan' : 'text-slate-300'}`}
-                  >
-                    {link.name}
-                  </Link>
-                </motion.div>
-              ))}
-              
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="flex flex-col gap-4 pt-8 mt-4 border-t border-white/10"
-              >
+            {/* Glowing Accent Orbs */}
+            <div className="absolute top-1/4 right-0 w-72 h-72 bg-neon-cyan/10 blur-[120px] pointer-events-none animate-pulse"></div>
+            <div className="absolute bottom-1/3 left-0 w-72 h-72 bg-neon-purple/10 blur-[120px] pointer-events-none animate-pulse delay-1000"></div>
+
+            <div className="flex flex-col gap-8 relative z-10 w-full">
+              {/* Menu Header with indicator */}
+              <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                <span className="text-[10px] uppercase tracking-widest text-slate-500 font-mono font-bold">Curated Navigation</span>
+                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-neon-cyan/10 border border-neon-cyan/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-neon-cyan animate-pulse"></span>
+                  <span className="text-[9px] font-mono font-bold text-neon-cyan uppercase tracking-widest">Active System</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                {navLinks.map((link, i) => {
+                  const isActive = location.pathname === link.path;
+                  return (
+                    <motion.div
+                      key={link.path}
+                      initial={{ opacity: 0, x: -30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ type: "spring", stiffness: 200, damping: 22, delay: i * 0.08 }}
+                    >
+                      <Link
+                        to={link.path}
+                        onClick={() => setIsOpen(false)}
+                        className={`group block p-4 rounded-2xl border transition-all duration-300 relative overflow-hidden ${
+                          isActive 
+                            ? 'bg-gradient-to-r from-neon-blue/15 to-neon-purple/5 border-neon-cyan/30 shadow-[0_4px_20px_rgba(0,240,255,0.08)]' 
+                            : 'bg-white/[0.02] border-white/5 hover:bg-white/[0.05] hover:border-white/10'
+                        }`}
+                      >
+                        {/* Dynamic backdrop accent */}
+                        <div className="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-neon-cyan/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                        <div className="flex items-center justify-between relative z-10">
+                          <div className="flex flex-col gap-1">
+                            <span className={`text-[10px] font-mono font-bold tracking-widest uppercase ${isActive ? 'text-neon-cyan' : 'text-slate-500'}`}>
+                              {link.tag}
+                            </span>
+                            <span className={`text-2xl sm:text-3xl font-display font-bold tracking-tight transition-colors duration-300 ${
+                              isActive ? 'text-white' : 'text-slate-300 group-hover:text-white'
+                            }`}>
+                              {link.name}
+                            </span>
+                            <span className="text-xs text-slate-400 font-medium tracking-wide">
+                              {link.label}
+                            </span>
+                          </div>
+
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center border transition-all duration-300 ${
+                            isActive 
+                              ? 'bg-neon-cyan border-neon-cyan text-black shadow-[0_0_15px_rgba(0,240,255,0.4)]' 
+                              : 'bg-white/5 border-white/10 text-slate-400 group-hover:border-neon-cyan/30 group-hover:text-neon-cyan group-hover:scale-105'
+                          }`}>
+                            <ArrowRight size={18} className={`transition-transform duration-300 ${isActive ? 'translate-x-0' : 'group-hover:translate-x-1'}`} />
+                          </div>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Quick Action Buttons Section */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ delay: 0.4, type: "spring", stiffness: 150 }}
+              className="relative z-10 flex flex-col gap-4 pt-6 mt-6 border-t border-white/10 w-full"
+            >
+              <div className="text-center">
+                <span className="text-[10px] uppercase tracking-widest text-slate-500 font-mono font-bold">Instant Support Hub</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <a href="https://wa.me/919073128151" className="w-full">
-                  <NeonButton variant="primary" className="w-full !py-4 shadow-[0_0_20px_rgba(0,240,255,0.2)]">
-                    <MessageSquare size={20} className="mr-2" /> direct WhatsApp
+                  <NeonButton variant="primary" className="w-full !py-4 shadow-[0_0_25px_rgba(0,240,255,0.25)] flex items-center justify-center gap-2 group text-base font-bold">
+                    <MessageSquare size={20} className="group-hover:scale-110 transition-transform" /> direct WhatsApp
                   </NeonButton>
                 </a>
                 <a href="tel:9073128151" className="w-full">
-                  <NeonButton variant="outline" className="w-full !py-4 bg-white/5">
-                    <Phone size={20} className="mr-2" /> 907-312-8151
+                  <NeonButton variant="outline" className="w-full !py-4 bg-slate-900/60 border border-white/10 flex items-center justify-center gap-2 group text-base font-bold text-slate-300 hover:text-white hover:border-neon-purple/50">
+                    <Phone size={20} className="group-hover:scale-110 transition-transform text-neon-purple" /> 907-312-8151
                   </NeonButton>
                 </a>
-              </motion.div>
-            </div>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

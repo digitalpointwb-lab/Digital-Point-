@@ -33,7 +33,7 @@ import { seedSampleData } from '../lib/db-utils';
 
 export default function AdminDashboard() {
   const { formatPrice } = useCurrency();
-  const { isAdmin, loading: authLoading } = useAdmin();
+  const { user, isAdmin, loading: authLoading } = useAdmin();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'categories' | 'inquiries' | 'settings'>('overview');
   
@@ -159,14 +159,18 @@ export default function AdminDashboard() {
           ...productData,
           updatedAt: serverTimestamp()
         });
+        alert("Product updated and saved successfully!");
       } else {
         await addDoc(collection(db, 'products'), {
           ...productData,
           createdAt: serverTimestamp()
         });
+        alert("Product added and saved successfully!");
       }
-      setShowProductForm(false);
+      
+      // Reset the form fields to blank/null and close the form section
       setEditingProduct(null);
+      setShowProductForm(false);
       fetchData();
     } catch (error) {
       console.error("Save failed:", error);
@@ -186,6 +190,27 @@ export default function AdminDashboard() {
 
   return (
     <DashboardLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+      {!user && (
+        <div className="mb-8 p-4 rounded-xl border border-amber-500/20 bg-amber-500/10 text-amber-200 text-xs flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <span className="text-lg">⚠️</span>
+            <div>
+              <p className="font-bold">Offline Bypass Session Active (bappa@1998)</p>
+              <p className="text-amber-300/80 mt-0.5">
+                You are not signed in to Firebase Auth. Product modifications will be rejected as unauthorized by the Firestore Security Rules. 
+                Please sign in using Google Auth with <strong className="text-amber-100 font-mono">digitalpointwb@gmail.com</strong>.
+              </p>
+            </div>
+          </div>
+          <NeonButton 
+            variant="outline" 
+            className="text-[10px] !py-1.5 !px-3 border-amber-500/30 hover:bg-amber-500/20 text-amber-200 shrink-0"
+            onClick={() => navigate('/admin/login')}
+          >
+            Authenticate Google Session
+          </NeonButton>
+        </div>
+      )}
       <AnimatePresence mode="wait">
             {activeTab === 'overview' && (
               <motion.div 
