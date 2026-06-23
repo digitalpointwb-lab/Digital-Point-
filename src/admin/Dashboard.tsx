@@ -89,8 +89,8 @@ export default function AdminDashboard() {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 1200;
-        const MAX_HEIGHT = 1200;
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
         let width = img.width;
         let height = img.height;
 
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
         const ctx = canvas.getContext('2d');
         ctx?.drawImage(img, 0, 0, width, height);
 
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
         setEditingProduct(prev => {
            if (!prev) return prev;
            return {
@@ -170,7 +170,8 @@ export default function AdminDashboard() {
       fetchData();
     } catch (error) {
       console.error("Save failed:", error);
-      alert("Failed to save product. Please check console for details.");
+      const errMsg = error instanceof Error ? error.message : String(error);
+      alert("Failed to save product: " + errMsg);
     }
   };
 
