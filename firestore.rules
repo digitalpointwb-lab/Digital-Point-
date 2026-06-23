@@ -1,0 +1,141 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} { 
+      allow read, write: if false; 
+    }
+
+    // --- Helpers ---
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isSignedIn() { return request.auth != null; }
+    
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    
+    function isSuperAdminCreate() {
+      return isSignedIn() && request.auth.token.email == 'digitalpointwb@gmail.com' && request.auth.token.email_verified == true;
+    }
+
+    // --- Validation Blueprints ---
+
+    function isValidProduct(data) {
+      return data.keys().hasAll(['name', 'slug', 'brand', 'categoryId', 'description', 'images', 'availability', 'isFeatured', 'createdAt'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 200
+        && data.slug is string && data.slug.size() > 0 && data.slug.size() <= 200
+        && data.brand is string && data.brand.size() <= 100
+        && data.categoryId is string && data.categoryId.size() <= 128
+        && data.description is string && data.description.size() <= 50000
+        && (!data.keys().hasAny(['price']) || (data.price is string && data.price.size() <= 50))
+        && (!data.keys().hasAny(['specifications']) || data.specifications is map)
+        && data.images is list && data.images.size() <= 20
+        && (data.images.size() == 0 || (data.images[0] is string && data.images[0].size() <= 1000))
+        && data.availability is bool
+        && data.isFeatured is bool
+        && data.createdAt == request.time;
+    }
+
+    function isValidProductUpdate(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 200
+        && data.slug is string && data.slug.size() > 0 && data.slug.size() <= 200
+        && data.brand is string && data.brand.size() <= 100
+        && data.categoryId is string && data.categoryId.size() <= 128
+        && data.description is string && data.description.size() <= 50000
+        && (!data.keys().hasAny(['price']) || (data.price is string && data.price.size() <= 50))
+        && (!data.keys().hasAny(['specifications']) || data.specifications is map)
+        && data.images is list && data.images.size() <= 20
+        && (data.images.size() == 0 || (data.images[0] is string && data.images[0].size() <= 1000))
+        && data.availability is bool
+        && data.isFeatured is bool;
+    }
+
+    function isValidCategory(data) {
+      return data.keys().hasAll(['name', 'slug'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.slug is string && data.slug.size() > 0 && data.slug.size() <= 100
+        && (!data.keys().hasAny(['description']) || (data.description is string && data.description.size() <= 2000))
+        && (!data.keys().hasAny(['image']) || (data.image is string && data.image.size() <= 1000));
+    }
+
+    function isValidInquiry(data) {
+      return data.keys().hasAll(['name', 'mobile', 'email', 'message', 'status', 'createdAt'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.mobile is string && data.mobile.size() > 0 && data.mobile.size() <= 20
+        && data.email is string && data.email.size() > 0 && data.email.size() <= 150
+        && data.message is string && data.message.size() > 0 && data.message.size() <= 5000
+        && data.status is string && data.status in ['new', 'read', 'replied', 'pending']
+        && (!data.keys().hasAny(['type']) || (data.type is string && data.type in ['general', 'expert_consultation']))
+        && (!data.keys().hasAny(['productId']) || (data.productId is string && data.productId.size() <= 128))
+        && (!data.keys().hasAny(['product']) || (data.product is string && data.product.size() <= 200))
+        && (!data.keys().hasAny(['productName']) || (data.productName is string && data.productName.size() <= 200))
+        && (!data.keys().hasAny(['date']) || (data.date is string && data.date.size() <= 50))
+        && (!data.keys().hasAny(['timeSlot']) || (data.timeSlot is string && data.timeSlot.size() <= 50))
+        && (!data.keys().hasAny(['consultationType']) || (data.consultationType is string && data.consultationType.size() <= 100))
+        && data.createdAt == request.time;
+    }
+
+    function isValidInquiryUpdate(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.mobile is string && data.mobile.size() > 0 && data.mobile.size() <= 20
+        && data.email is string && data.email.size() > 0 && data.email.size() <= 150
+        && data.message is string && data.message.size() > 0 && data.message.size() <= 5000
+        && data.status is string && data.status in ['new', 'read', 'replied', 'pending']
+        && (!data.keys().hasAny(['type']) || (data.type is string && data.type in ['general', 'expert_consultation']))
+        && (!data.keys().hasAny(['productId']) || (data.productId is string && data.productId.size() <= 128))
+        && (!data.keys().hasAny(['product']) || (data.product is string && data.product.size() <= 200))
+        && (!data.keys().hasAny(['productName']) || (data.productName is string && data.productName.size() <= 200))
+        && (!data.keys().hasAny(['date']) || (data.date is string && data.date.size() <= 50))
+        && (!data.keys().hasAny(['timeSlot']) || (data.timeSlot is string && data.timeSlot.size() <= 50))
+        && (!data.keys().hasAny(['consultationType']) || (data.consultationType is string && data.consultationType.size() <= 100));
+    }
+
+    function isValidAdmin(data) {
+      return data.keys().hasAll(['email', 'role', 'createdAt'])
+        && data.keys().size() == 3
+        && data.email is string && data.email.size() > 0 && data.email.size() <= 150
+        && data.role is string && data.role == 'owner'
+        && data.createdAt == request.time;
+    }
+    
+    // --- Rules ---
+
+    match /admins/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isValidId(userId) 
+        && request.auth.uid == userId 
+        && isSuperAdminCreate() 
+        && isValidAdmin(incoming()) 
+        && incoming().email == request.auth.token.email;
+      // No updates or deletes for admins directly from client
+    }
+
+    match /products/{productId} {
+      allow read: if isValidId(productId);
+      allow list: if true;
+      allow create: if isValidId(productId) && isAdmin() && isValidProduct(incoming());
+      allow update: if isValidId(productId) && isAdmin() && isValidProductUpdate(incoming()) && incoming().createdAt == existing().createdAt;
+      allow delete: if isValidId(productId) && isAdmin();
+    }
+
+    match /categories/{categoryId} {
+      allow read: if isValidId(categoryId);
+      allow list: if true;
+      allow create: if isValidId(categoryId) && isAdmin() && isValidCategory(incoming());
+      allow update: if isValidId(categoryId) && isAdmin() && isValidCategory(incoming());
+      allow delete: if isValidId(categoryId) && isAdmin();
+    }
+
+    match /inquiries/{inquiryId} {
+      // Inquiries form is public, so no auth required to create
+      allow create: if isValidId(inquiryId) && isValidInquiry(incoming());
+      allow read, list: if isAdmin();
+      allow update: if isValidId(inquiryId) && isAdmin() && isValidInquiryUpdate(incoming()) && incoming().createdAt == existing().createdAt;
+      allow delete: if isValidId(inquiryId) && isAdmin();
+    }
+  }
+}

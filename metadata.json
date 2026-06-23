@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Digital Point | Premium Imaging Showroom",
+  "description": "A luxury futuristic catalog for high-end photography and videography equipment in Kolkata.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

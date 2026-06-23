@@ -1,0 +1,462 @@
+import React from 'react';
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'motion/react';
+import { ChevronRight, MessageSquare, Phone, Zap, Shield, Award, Star, Quote } from 'lucide-react';
+import { NeonButton } from '../components/ui/NeonButton';
+import { GlassCard } from '../components/ui/GlassCard';
+import { Link } from 'react-router-dom';
+
+function TiltCard({ children, className, depth = 50 }: { children: React.ReactNode, className?: string, depth?: number }) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
+  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateY,
+        rotateX,
+        transformStyle: "preserve-3d",
+      }}
+      className={`relative perspective-1000 ${className || ''}`}
+    >
+      <div style={{ transform: `translateZ(${depth}px)`, transformStyle: "preserve-3d" }} className="w-full h-full">
+        {children}
+      </div>
+    </motion.div>
+  );
+}
+
+export default function Home() {
+  const featuredCategories = [
+    { name: 'Cameras', icon: '📸', count: 12, slug: 'camera' },
+    { name: 'Lenses', icon: '🔍', count: 24, slug: 'lens' },
+    { name: 'Drones', icon: '🚁', count: 8, slug: 'drone' },
+    { name: 'Switchers', icon: '🎚️', count: 5, slug: 'switcher' },
+  ];
+
+  return (
+    <div className="flex flex-col perspective-1000">
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center pt-20 overflow-hidden perspective-1000">
+        {/* Animated Background */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(15,23,42,1)_0%,rgba(2,6,23,1)_100%)]" />
+        <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
+           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-neon-blue/20 rounded-full blur-[120px] animate-pulse" />
+           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-neon-purple/20 rounded-full blur-[120px] animate-[pulse_4s_ease-in-out_infinite] delay-700" />
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 transform-style-3d">
+          <motion.div
+            initial={{ opacity: 0, x: -100, rotateY: 30 }}
+            animate={{ opacity: 1, x: 0, rotateY: 0 }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+          >
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-neon-blue/10 border border-neon-blue/20 text-neon-blue text-xs font-bold tracking-widest uppercase mb-6 shadow-[0_0_20px_rgba(0,240,255,0.2)]"
+            >
+              <Zap size={14} className="animate-pulse" /> Future of Imaging
+            </motion.div>
+            <h1 className="text-5xl md:text-7xl font-display font-bold leading-[1.1] mb-6 drop-shadow-2xl">
+              Professional Imaging <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue via-neon-cyan to-neon-purple animate-gradient-bg">
+                Technology
+              </span> for Creators
+            </h1>
+            <p className="text-lg text-slate-400 mb-10 max-w-lg leading-relaxed">
+              Premium cameras, lenses, drones, video switchers, and photography accessories from Digital Point. Elevate your production to cinema standards.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Link to="/products">
+                <NeonButton variant="primary" className="hover:scale-105 transition-transform">
+                  Explore Catalog <ChevronRight size={20} />
+                </NeonButton>
+              </Link>
+              <a href="https://wa.me/919073128151">
+                <NeonButton variant="outline" className="hover:scale-105 transition-transform group">
+                  <MessageSquare size={20} className="group-hover:animate-bounce" /> WhatsApp Inquiry
+                </NeonButton>
+              </a>
+            </div>
+            
+            <div className="mt-12 flex items-center gap-8 pt-8 border-t border-white/5">
+              {[
+                { label: 'Products', value: '500+' },
+                { label: 'Top Brands', value: '15+' },
+                { label: 'Support', value: '24/7' }
+              ].map((stat, idx) => (
+                <motion.div 
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 + (idx * 0.1) }}
+                >
+                  <div className="text-2xl font-bold text-white drop-shadow-md">{stat.value}</div>
+                  <div className="text-xs text-slate-500 uppercase tracking-widest">{stat.label}</div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, rotateX: 20, rotateY: -30 }}
+            animate={{ opacity: 1, scale: 1, rotateX: 0, rotateY: 0 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            className="relative hidden lg:block perspective-1000"
+          >
+            <TiltCard depth={80} className="relative z-10 w-full aspect-square rounded-[3rem] overflow-hidden glass-panel border-white/10 p-2 group shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)]">
+              <img 
+                src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=800" 
+                alt="Cinema Camera"
+                className="w-full h-full object-cover rounded-[2.5rem] group-hover:scale-110 transition-transform duration-1000 ease-out" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+              <div className="absolute bottom-10 left-10 right-10" style={{ transform: 'translateZ(100px)' }}>
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,1)]"></span>
+                  <div className="text-neon-blue text-sm font-bold uppercase tracking-widest">Featured Gear</div>
+                </div>
+                <div className="text-3xl font-display font-bold text-white drop-shadow-lg">RED V-RAPTOR 8K VV</div>
+              </div>
+            </TiltCard>
+            {/* Holographic Accents */}
+            <div className="absolute -top-10 -right-10 w-40 h-40 border border-neon-blue/30 rounded-full animate-[spin_10s_linear_infinite] shadow-[0_0_30px_rgba(0,240,255,0.2)]" />
+            <div className="absolute -bottom-10 -left-10 w-60 h-60 border-2 border-dashed border-neon-purple/20 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Featured Categories */}
+      <section className="py-24 bg-black relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
+            className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6"
+          >
+            <div>
+              <h2 className="text-4xl md:text-5xl font-display font-bold mb-4 drop-shadow-md">Master Every Angle</h2>
+              <p className="text-slate-400 text-lg">Premium equipment curated for every specialized creative workflow.</p>
+            </div>
+            <Link to="/categories" className="text-neon-blue font-bold flex items-center gap-2 hover:gap-3 transition-all shrink-0">
+              View All Categories <ChevronRight size={20} />
+            </Link>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {featuredCategories.map((cat, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 50, rotateX: 20 }}
+                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                className="perspective-1000"
+              >
+                <TiltCard depth={40}>
+                  <GlassCard className="h-full hover:border-neon-blue/50 transition-all duration-300 shadow-xl hover:shadow-[0_0_30px_rgba(0,240,255,0.15)] group">
+                    <div className="text-5xl mb-8 transform group-hover:scale-110 group-hover:-translate-y-2 transition-transform duration-300" style={{ transform: "translateZ(30px)" }}>{cat.icon}</div>
+                    <h3 className="text-2xl font-bold mb-2 tracking-tight" style={{ transform: "translateZ(20px)" }}>{cat.name}</h3>
+                    <p className="text-slate-500 text-sm mb-6" style={{ transform: "translateZ(10px)" }}>{cat.count} Premium Models</p>
+                    <Link to={`/products?category=${cat.slug}`} className="text-neon-cyan text-xs font-bold uppercase tracking-widest flex items-center gap-2 group-hover:text-neon-blue transition-colors w-max" style={{ transform: "translateZ(15px)" }}>
+                      Explore <ChevronRight size={14} className="group-hover:translate-x-2 transition-transform" />
+                    </Link>
+                  </GlassCard>
+                </TiltCard>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Brand Showcase - Why Digital Point */}
+      <section className="py-24 relative overflow-hidden bg-cyber-black">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+          <motion.div 
+            initial={{ opacity: 0, x: -50, rotateY: -20 }}
+            whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 1 }}
+            className="order-2 lg:order-1 relative w-full mx-auto"
+          >
+            {/* Premium Card Layout */}
+            <TiltCard depth={60}>
+              <div className="relative group perspective-1000">
+                <div className="absolute -inset-1 bg-gradient-to-r from-neon-blue/40 via-neon-purple/40 to-neon-cyan/40 rounded-[2.5rem] blur-xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
+                <div className="relative h-full bg-slate-950/90 backdrop-blur-3xl border border-white/20 hover:border-neon-blue/50 transition-all duration-500 rounded-[2rem] p-10 sm:p-14 overflow-hidden shadow-2xl">
+                  
+                  {/* Subtle Grid Background */}
+                  <div className="absolute inset-0 bg-white/5 opacity-20 brightness-100 mix-blend-overlay"></div>
+                  <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+
+                  <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left h-full transform-style-3d">
+                    <div style={{ transform: "translateZ(40px)" }} className="w-20 h-20 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-neon-blue/20 to-neon-purple/20 border border-neon-blue/30 flex items-center justify-center mb-8 sm:mb-12 shadow-[0_0_40px_rgba(0,240,255,0.2)] group-hover:scale-110 transition-transform duration-700 ease-out">
+                      <Shield className="text-neon-blue" size={48} strokeWidth={1.2} />
+                    </div>
+                    
+                    <div className="space-y-6" style={{ transform: "translateZ(30px)" }}>
+                      <h4 className="text-4xl sm:text-5xl font-display font-bold tracking-tight text-white leading-tight drop-shadow-md">
+                        Authentic <br className="hidden sm:block" />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue via-neon-cyan to-white">Warranty</span>
+                      </h4>
+                      <p className="text-slate-400 text-base sm:text-lg leading-relaxed max-w-sm">
+                        Complete peace of mind. Every piece of gear comes with official manufacturer backing and our priority service commitment.
+                      </p>
+                    </div>
+
+                    {/* Trust badges/indicators */}
+                    <div style={{ transform: "translateZ(20px)" }} className="mt-12 sm:mt-16 flex items-center justify-center sm:justify-start gap-6 sm:gap-10 border-t border-white/10 pt-8 sm:pt-10 w-full">
+                      <div className="flex flex-col items-center sm:items-start group/badge">
+                        <div className="text-3xl font-bold text-white group-hover/badge:text-neon-blue transition-colors">100%</div>
+                        <div className="text-xs text-slate-500 uppercase tracking-widest font-bold mt-1">Genuine</div>
+                      </div>
+                      <div className="w-px h-12 bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
+                      <div className="flex flex-col items-center sm:items-start group/badge">
+                        <div className="text-3xl font-bold text-white group-hover/badge:text-neon-purple transition-colors">24/7</div>
+                        <div className="text-xs text-slate-500 uppercase tracking-widest font-bold mt-1">Support</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Decorative glow inside card */}
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-neon-blue/10 blur-[80px] rounded-full pointer-events-none group-hover:bg-neon-blue/30 transition-colors duration-1000"></div>
+                </div>
+              </div>
+            </TiltCard>
+          </motion.div>
+          
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 1 }}
+            className="order-1 lg:order-2"
+          >
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-10 leading-tight">Why Creators Choose <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple animate-gradient-bg">Digital Point</span></h2>
+            <div className="space-y-10">
+               {[
+                 { icon: <Award className="text-luxury-gold" size={28} />, title: "Premium Selection", desc: "Hand-picked inventory from the world's leading imaging brands like Sony, DJI, and RED." },
+                 { icon: <Zap className="text-neon-purple" size={28} />, title: "Expert Consultation", desc: "Technical advice from professionals who understand cinema and photography workflows." },
+                 { icon: <Phone className="text-neon-cyan" size={28} />, title: "Direct Support", desc: "No bots. Real human conversation for inquiries, stock checks, and custom orders." }
+               ].map((item, idx) => (
+                 <motion.div 
+                   key={idx}
+                   initial={{ opacity: 0, y: 30 }}
+                   whileInView={{ opacity: 1, y: 0 }}
+                   viewport={{ once: true }}
+                   transition={{ delay: idx * 0.2, duration: 0.6 }}
+                   className="flex gap-6 group"
+                 >
+                   <div className="w-16 h-16 rounded-2xl bg-slate-900 shadow-[0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center shrink-0 border border-white/5 group-hover:border-white/20 group-hover:scale-110 transition-all duration-500 relative overflow-hidden">
+                     <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                     {item.icon}
+                   </div>
+                   <div>
+                     <h4 className="text-2xl font-bold mb-2 text-white group-hover:text-neon-blue transition-colors">{item.title}</h4>
+                     <p className="text-slate-400 text-lg leading-relaxed">{item.desc}</p>
+                   </div>
+                 </motion.div>
+               ))}
+            </div>
+            <div className="mt-14">
+              <Link to="/about">
+                <NeonButton variant="outline" className="text-lg px-8 py-4">Learn Our Story</NeonButton>
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Reviews Section */}
+      <section className="py-24 bg-black relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute top-1/4 left-0 w-96 h-96 bg-neon-blue/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-neon-purple/5 rounded-full blur-[100px] pointer-events-none" />
+        
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4 drop-shadow-md">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple">Reviews</span>
+            </h2>
+            <p className="text-slate-400 text-lg max-w-2xl mx-auto mb-6">
+              Don't just take our word for it. Hear what professional creators have to say about their experience with Digital Point.
+            </p>
+            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-slate-900/50 border border-white/10 backdrop-blur-xl">
+              <div className="flex -space-x-3">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="w-10 h-10 rounded-full border-2 border-slate-900 bg-gradient-to-br from-neon-blue/40 to-neon-purple/40 flex items-center justify-center text-xs font-bold text-white z-10 relative overflow-hidden">
+                    <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="User" className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-col items-start ml-2">
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map((i) => <Star key={i} size={14} className="text-luxury-gold fill-luxury-gold" />)}
+                </div>
+                <span className="text-sm font-bold text-white mt-1">Trusted by 2340+ happy customers</span>
+              </div>
+            </div>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Rahul M.",
+                role: "Cinematographer",
+                text: "The delivery was incredibly fast and the packaging was absolutely secure. The gear is top-notch. Highly recommended for any serious filmmaker looking for reliable equipment.",
+                rating: 5,
+              },
+              {
+                name: "Priyanka S.",
+                role: "Wedding Photographer",
+                text: "Digital Point is my go-to for all lenses and bodies. Their authentic warranty gives me complete peace of mind during crucial shoots. The support is fantastic.",
+                rating: 5,
+              },
+              {
+                name: "Vikram D.",
+                role: "Content Creator",
+                text: "Expert consultation really helped me decide on my first cinema camera rig. No upselling, just genuine advice and the best prices I could find online.",
+                rating: 5,
+              },
+              {
+                name: "Anjali K.",
+                role: "Portrait Photographer",
+                text: "I was looking for a specific high-end lens and couldn't find it anywhere. Digital Point not only had it in stock but also delivered it before my weekend shoot. Amazing service!",
+                rating: 5,
+              },
+              {
+                name: "Rohit T.",
+                role: "Vlogger & Youtuber",
+                text: "The buying process was incredibly smooth. They even helped me choose the right microphone for my setup. The pricing is unbeatable for the quality you're getting.",
+                rating: 5,
+              },
+              {
+                name: "Sneha R.",
+                role: "Fashion Photographer",
+                text: "Outstanding customer service! I faced a minor issue with my lighting kit, and their team resolved it within hours. It's rare to see such dedication locally.",
+                rating: 5,
+              }
+            ].map((review, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 50, rotateY: 30 }}
+                whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.8, delay: i * 0.2, ease: "easeOut" }}
+                className="perspective-1000"
+              >
+                <TiltCard depth={40}>
+                  <div className="relative h-full bg-slate-900/50 backdrop-blur-xl border border-white/10 hover:border-neon-blue/30 transition-all duration-500 rounded-3xl p-8 group">
+                    <div className="absolute top-6 right-8 text-white/5 group-hover:text-neon-blue/10 transition-colors duration-500 transform group-hover:scale-110" style={{ transform: "translateZ(10px)" }}>
+                      <Quote size={80} />
+                    </div>
+                    
+                    <div className="relative z-10">
+                      <div className="flex gap-1 mb-6" style={{ transform: "translateZ(30px)" }}>
+                        {[...Array(review.rating)].map((_, j) => (
+                          <Star key={j} className="text-luxury-gold fill-luxury-gold" size={16} />
+                        ))}
+                      </div>
+                      
+                      <p className="text-slate-300 text-lg leading-relaxed mb-8 italic" style={{ transform: "translateZ(20px)" }}>
+                        "{review.text}"
+                      </p>
+                      
+                      <div className="flex items-center gap-4 border-t border-white/10 pt-6" style={{ transform: "translateZ(40px)" }}>
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-neon-blue/20 to-neon-purple/20 flex items-center justify-center border border-white/10 text-white font-bold text-lg shadow-[0_0_15px_rgba(0,240,255,0.2)]">
+                          {review.name.charAt(0)}
+                        </div>
+                        <div>
+                          <h4 className="text-white font-bold tracking-wide">{review.name}</h4>
+                          <span className="text-neon-cyan text-xs uppercase tracking-widest">{review.role}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TiltCard>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Inquiry CTA */}
+      <section className="py-32 px-6 relative overflow-hidden bg-slate-950">
+        {/* Animated grid background */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#00f0ff0a_1px,transparent_1px),linear-gradient(to_bottom,#00f0ff0a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+        
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9, y: 50 }}
+          whileInView={{ opacity: 1, scale: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="max-w-5xl mx-auto rounded-[3rem] bg-gradient-to-br from-neon-blue/30 via-cyber-navy to-neon-purple/30 p-[1px] relative z-10 shadow-[0_0_80px_rgba(0,240,255,0.15)]"
+        >
+          <TiltCard depth={30}>
+            <div className="bg-cyber-black/95 rounded-[3rem] p-12 md:p-20 text-center backdrop-blur-3xl overflow-hidden relative">
+              {/* Internal glow */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-lg max-h-lg bg-neon-blue/10 blur-[100px] rounded-full pointer-events-none"></div>
+
+              <div className="relative z-10" style={{ transform: "translateZ(50px)" }}>
+                <h2 className="text-4xl md:text-6xl font-display font-bold mb-8 drop-shadow-lg leading-tight">Ready to Build Your <br className="hidden md:block"/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-blue">Cinematic Rig?</span></h2>
+                <p className="text-slate-300 text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
+                  Our specialists are ready to help you find the perfect lens, body, or drone for your next project. Get a personalized quote today.
+                </p>
+                <div className="flex flex-col sm:flex-row justify-center gap-6">
+                  <a href="https://wa.me/919073128151">
+                    <NeonButton variant="primary" className="px-10 py-5 text-lg w-full sm:w-auto shadow-[0_0_30px_rgba(0,240,255,0.3)] hover:shadow-[0_0_50px_rgba(0,240,255,0.5)] transition-all">
+                      <MessageSquare size={24} className="mr-2" /> WhatsApp Us Now
+                    </NeonButton>
+                  </a>
+                  <Link to="/contact">
+                    <NeonButton variant="outline" className="px-10 py-5 text-lg w-full sm:w-auto bg-black/50 backdrop-blur-sm hover:bg-white/5 transition-all">
+                      Submit Inquiry Form
+                    </NeonButton>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </TiltCard>
+        </motion.div>
+      </section>
+    </div>
+  );
+}
+
