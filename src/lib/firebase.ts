@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, signOut, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { getFirestore, FirestoreError } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
@@ -71,6 +71,14 @@ export const loginWithGoogle = async () => {
     console.warn("Failed to set persistence during login:", e);
   }
   return signInWithPopup(auth, googleProvider);
+};
+export const loginWithGoogleRedirect = async () => {
+  try {
+    await setPersistence(auth, browserLocalPersistence);
+  } catch (e) {
+    console.warn("Failed to set persistence during login:", e);
+  }
+  return signInWithRedirect(auth, googleProvider);
 };
 export const logout = async () => {
   try {
