@@ -66,7 +66,19 @@ export default function Products() {
         return matchesSearch && matchesCategory;
       })
       .sort((a, b) => {
-        if (sortBy === 'newest') return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        if (sortBy === 'newest') {
+          const tA = a.createdAt?.seconds 
+            ? a.createdAt.seconds * 1000 
+            : (a.createdAt && typeof a.createdAt.toDate === 'function' 
+                ? a.createdAt.toDate().getTime() 
+                : new Date(a.createdAt).getTime() || 0);
+          const tB = b.createdAt?.seconds 
+            ? b.createdAt.seconds * 1000 
+            : (b.createdAt && typeof b.createdAt.toDate === 'function' 
+                ? b.createdAt.toDate().getTime() 
+                : new Date(b.createdAt).getTime() || 0);
+          return (tB || 0) - (tA || 0);
+        }
         if (sortBy === 'featured') return (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0);
         if (sortBy === 'name') return a.name.localeCompare(b.name);
         return 0;
