@@ -12,7 +12,7 @@ import firebaseConfig from '../../firebase-applet-config.json';
 export default function AdminLogin() {
   const { user, isAdmin, loading } = useAdmin();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'google' | 'bypass'>('google');
+  const [activeTab, setActiveTab] = useState<'google' | 'bypass'>('bypass');
   
   // Google Auth States
   const [authError, setAuthError] = useState<{
@@ -229,19 +229,19 @@ export default function AdminLogin() {
                       </div>
 
                       <div className="space-y-3">
-                        <span className="text-[10px] uppercase tracking-widest font-mono font-bold text-slate-500">How to authorize this domain permanently:</span>
+                        <span className="text-[10px] uppercase tracking-widest font-mono font-bold text-slate-500">How to authorize this domain (Identity Platform):</span>
                         <div className="space-y-2.5 text-xs text-slate-400 font-medium pl-1">
                           <div className="flex items-start gap-2.5">
                             <span className="w-5 h-5 rounded-full bg-neon-cyan/10 border border-neon-cyan/20 flex items-center justify-center text-[10px] font-bold text-neon-cyan shrink-0">1</span>
-                            <p className="mt-0.5">Copy the domain using the <strong>Copy</strong> button above.</p>
+                            <p className="mt-0.5">Click <strong>Open Firebase Settings</strong> below.</p>
                           </div>
                           <div className="flex items-start gap-2.5">
                             <span className="w-5 h-5 rounded-full bg-neon-purple/10 border border-neon-purple/20 flex items-center justify-center text-[10px] font-bold text-neon-purple shrink-0">2</span>
-                            <p className="mt-0.5">Click <strong>Open Firebase Settings</strong> below to access the settings.</p>
+                            <p className="mt-0.5">In Firebase, go to the <strong>Settings</strong> tab under Authentication (next to Users / Sign-in method).</p>
                           </div>
                           <div className="flex items-start gap-2.5">
                             <span className="w-5 h-5 rounded-full bg-luxury-gold/10 border border-luxury-gold/20 flex items-center justify-center text-[10px] font-bold text-luxury-gold shrink-0">3</span>
-                            <p className="mt-0.5">Scroll to <strong>Authorized Domains</strong>, click <strong>Add Domain</strong>, and paste.</p>
+                            <p className="mt-0.5">Click <strong>Authorized domains</strong>, then <strong>Add domain</strong>, and paste your Vercel domain.</p>
                           </div>
                         </div>
                       </div>
