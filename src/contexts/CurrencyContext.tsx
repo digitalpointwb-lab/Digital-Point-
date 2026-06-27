@@ -5,7 +5,7 @@ type Currency = 'INR' | 'USD';
 interface CurrencyContextType {
   currency: Currency;
   toggleCurrency: () => void;
-  formatPrice: (priceString?: string) => string;
+  formatPrice: (price?: string | number) => string;
 }
 
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
@@ -35,16 +35,22 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
     setCurrency(prev => prev === 'INR' ? 'USD' : 'INR');
   };
 
-  const formatPrice = (priceString?: string) => {
-    if (!priceString) return 'Price on Request';
+  const formatPrice = (priceInput?: string | number) => {
+    if (priceInput === undefined || priceInput === null) return 'Price on Request';
     
-    // Remove non-numeric characters except decimals
-    const numericValue = parseFloat(priceString.replace(/[^0-9.]/g, ''));
-    if (isNaN(numericValue) || numericValue === 0) return priceString || 'Price on Request';
+    let numericValue: number;
+    let originalCurrency: Currency = 'INR';
 
-    // Guess original currency based on the string format or value range
-    // If it has '$', it's USD. If it has '₹' or 'INR' or is very large, maybe INR.
-    let originalCurrency: Currency = priceString.includes('$') ? 'USD' : 'INR';
+    if (typeof priceInput === 'number') {
+      numericValue = priceInput;
+      // Assume number inputs are originally INR for now since calculation uses INR
+    } else {
+      // Remove non-numeric characters except decimals
+      numericValue = parseFloat(priceInput.replace(/[^0-9.]/g, ''));
+      if (isNaN(numericValue) || numericValue === 0) return priceInput || 'Price on Request';
+      
+      originalCurrency = priceInput.includes('$') ? 'USD' : 'INR';
+    }
     
     // Convert to target currency
     let targetValue = numericValue;

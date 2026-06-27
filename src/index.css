@@ -12,6 +12,79 @@
   --color-luxury-gold: #c5a059;
   --color-cyber-black: #020617;
   --color-cyber-navy: #0f172a;
+
+  --animate-hologram-float: hologram-float 8s ease-in-out infinite;
+  --animate-hologram-float-delayed: hologram-float-delayed 10s ease-in-out infinite;
+  --animate-border-slide-top: border-slide-top 3s linear infinite;
+  --animate-border-slide-right: border-slide-right 3s linear infinite;
+  --animate-border-slide-bottom: border-slide-bottom 3s linear infinite;
+  --animate-border-slide-left: border-slide-left 3s linear infinite;
+  --animate-scan-sweep: scan-sweep 4s ease-in-out infinite;
+  --animate-spin-slow: spin 15s linear infinite;
+  --animate-spin-reverse-slow: spin-reverse 10s linear infinite;
+
+  @keyframes scan-sweep {
+    0% { top: 0%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  @keyframes spin-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+  }
+
+  @keyframes border-slide-top {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  @keyframes border-slide-right {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+  @keyframes border-slide-bottom {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+  @keyframes border-slide-left {
+    0% { transform: translateY(100%); }
+    100% { transform: translateY(-100%); }
+  }
+
+  @keyframes hologram-float {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+      box-shadow: 0 4px 30px rgba(0, 242, 255, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    }
+    50% {
+      transform: translateY(-8px) rotate(0.4deg);
+      box-shadow: 0 12px 35px rgba(188, 19, 254, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  @keyframes hologram-float-delayed {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+      box-shadow: 0 4px 30px rgba(188, 19, 254, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    }
+    50% {
+      transform: translateY(-7px) rotate(-0.4deg);
+      box-shadow: 0 10px 30px rgba(0, 242, 255, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+    }
+  }
+  @keyframes glass-glow-pulse {
+    0%, 100% {
+      box-shadow: 0 8px 32px rgba(0, 242, 255, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-4px);
+    }
+    50% {
+      box-shadow: 0 8px 40px rgba(0, 242, 255, 0.2), 0 0 15px rgba(0, 242, 255, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+      border-color: rgba(0, 242, 255, 0.4);
+      transform: translateY(-4px);
+    }
+  }
 }
 
 @layer base {
@@ -50,7 +123,20 @@
 
 @layer components {
   .glass-panel {
-    @apply bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-2xl;
+    @apply bg-slate-900/40 backdrop-blur-3xl border border-white/10 rounded-2xl transition-all duration-500 ease-out;
+  }
+
+  .glass-panel:hover {
+    animation: glass-glow-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    z-index: 20;
+  }
+
+  .holographic-float {
+    animation: hologram-float 8s ease-in-out infinite;
+  }
+
+  .holographic-float-delayed {
+    animation: hologram-float-delayed 10s ease-in-out infinite;
   }
   
   .neon-glow-blue {
@@ -68,5 +154,50 @@
   }
   .transform-style-3d {
     transform-style: preserve-3d;
+  }
+
+  .glitch-anim {
+    animation: text-glitch-random 4s infinite;
+    display: inline-block;
+  }
+  .glitch-anim:nth-child(2n) {
+    animation-duration: 5.5s;
+    animation-delay: 1.2s;
+  }
+  .glitch-anim:nth-child(3n) {
+    animation-duration: 6.2s;
+    animation-delay: 3.5s;
+  }
+  .glitch-anim:nth-child(4n) {
+    animation-duration: 4.8s;
+    animation-delay: 0.5s;
+  }
+}
+
+@keyframes text-glitch-random {
+  0%, 93% {
+    transform: translate(0, 0) skew(0deg);
+    text-shadow: none;
+    opacity: 1;
+  }
+  94% {
+    transform: translate(-2px, 1px) skew(2deg);
+    text-shadow: 2px 0 #00f2ff, -2px 0 #bc13fe;
+    opacity: 0.9;
+  }
+  95% {
+    transform: translate(2px, -1px) skew(-2deg);
+    text-shadow: -2px 0 #00fff2, 2px 0 #bc13fe;
+    opacity: 1;
+  }
+  96% {
+    transform: translate(-1px, 2px) skew(1deg);
+    text-shadow: 1px 0 #00f2ff, -1px 0 #bc13fe;
+    opacity: 0.8;
+  }
+  97%, 100% {
+    transform: translate(0, 0) skew(0deg);
+    text-shadow: none;
+    opacity: 1;
   }
 }

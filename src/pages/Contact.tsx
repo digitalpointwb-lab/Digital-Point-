@@ -99,7 +99,7 @@ export default function Contact() {
                 <MessageSquare className="text-neon-purple mb-4 group-hover:animate-pulse" size={28} />
                 <h3 className="font-bold text-white mb-1 text-lg">WhatsApp</h3>
                 <p className="text-slate-400 text-sm mb-4">Instant Chat Support</p>
-                <a href="https://wa.me/919073128151" className="text-neon-purple text-xs font-bold uppercase tracking-widest flex items-center group/link">
+                <a href="https://wa.me/919073128151" target="_top" rel="noopener noreferrer" className="text-neon-purple text-xs font-bold uppercase tracking-widest flex items-center group/link">
                   Start Conversation <span className="ml-2 group-hover/link:translate-x-1 transition-transform">→</span>
                 </a>
               </GlassCard>

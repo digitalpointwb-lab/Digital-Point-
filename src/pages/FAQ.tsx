@@ -50,7 +50,7 @@ export default function FAQ() {
              <p className="text-slate-400">Our technical support is available from 10 AM to 8:30 PM.</p>
            </div>
            <div className="flex gap-4">
-              <a href="https://wa.me/919073128151">
+              <a href="https://wa.me/919073128151" target="_top" rel="noopener noreferrer">
                 <NeonButton variant="primary">
                   <MessageSquare size={18} /> WhatsApp Support
                 </NeonButton>

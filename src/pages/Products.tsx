@@ -1,12 +1,15 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Filter, SlidersHorizontal, MessageSquare, Phone, Eye, ArrowUpDown, Camera } from 'lucide-react';
+import { Search, Filter, SlidersHorizontal, MessageSquare, Phone, Eye, ArrowUpDown, Camera, ShoppingCart, Heart } from 'lucide-react';
 import { GlassCard } from '../components/ui/GlassCard';
 import { TiltCard } from '../components/ui/TiltCard';
 import { NeonButton } from '../components/ui/NeonButton';
 import { ProductCardSkeleton } from '../components/ui/Skeleton';
+import { LensFlare } from '../components/ui/LensFlare';
 import { useCurrency } from '../contexts/CurrencyContext';
+import { useCart } from '../contexts/CartContext';
+import { useWishlist } from '../contexts/WishlistContext';
 import { auth, db } from '../lib/firebase';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { Product } from '../types';
@@ -15,6 +18,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 export default function Products() {
   const { formatPrice } = useCurrency();
+  const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [searchParams] = useSearchParams();
   const categoryFilter = searchParams.get('category');
   
@@ -170,23 +175,46 @@ export default function Products() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {filteredProducts.map((product, i) => (
               <TiltCard key={product.id} delay={i * 0.05} className="flex flex-col p-0 group border-white/5 hover:border-neon-blue/30 h-full">
-                <div className="aspect-[4/5] relative overflow-hidden bg-slate-900 border-b border-white/5">
+                <div 
+                  className="aspect-[4/5] relative overflow-hidden bg-slate-900 border-b border-white/5"
+                  onMouseMove={(e) => {
+                    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                    const x = ((e.clientX - left) / width) * 100;
+                    const y = ((e.clientY - top) / height) * 100;
+                    const img = e.currentTarget.querySelector('img');
+                    if (img) img.style.transformOrigin = `${x}% ${y}%`;
+                  }}
+                  onMouseLeave={(e) => {
+                    const img = e.currentTarget.querySelector('img');
+                    if (img) img.style.transformOrigin = `center center`;
+                  }}
+                >
                   <img 
                     src={product.images[0]} 
                     alt={product.name} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500 ease-out will-change-transform"
                   />
+                  <LensFlare className="opacity-30 group-hover:opacity-85 group-hover:scale-110 transition-all duration-500" />
                   {product.isFeatured && (
-                    <div className="absolute top-4 left-4 bg-luxury-gold text-black text-[10px] font-black uppercase tracking-tighter px-2 py-1 rounded">
+                    <div className="absolute top-4 left-4 bg-luxury-gold text-black text-[10px] font-black uppercase tracking-tighter px-2 py-1 rounded z-10">
                       Featured
                     </div>
                   )}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      isInWishlist(product.id) ? removeFromWishlist(product.id) : addToWishlist(product);
+                    }}
+                    className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-colors"
+                  >
+                    <Heart size={16} className={isInWishlist(product.id) ? "fill-pink-500 text-pink-500" : "text-white"} />
+                  </button>
                   {product.availability ? (
-                    <div className="absolute top-4 right-4 bg-emerald-500/20 backdrop-blur-md text-emerald-400 text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded border border-emerald-500/30 w-fit ml-auto">
+                    <div className="absolute bottom-4 right-4 bg-emerald-500/20 backdrop-blur-md text-emerald-400 text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded border border-emerald-500/30 w-fit ml-auto z-10">
                       In Stock
                     </div>
                   ) : (
-                    <div className="absolute top-4 right-4 bg-red-500/20 backdrop-blur-md text-red-400 text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded border border-red-500/30 w-fit ml-auto">
+                    <div className="absolute bottom-4 right-4 bg-red-500/20 backdrop-blur-md text-red-400 text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded border border-red-500/30 w-fit ml-auto z-10">
                       Out of Stock
                     </div>
                   )}
@@ -198,20 +226,23 @@ export default function Products() {
                   <p className="text-slate-400 text-sm mb-6 line-clamp-2">{product.description}</p>
                   
                   <div className="mt-auto pt-6 border-t border-white/5 flex flex-col gap-3">
-                    <Link to={`/products/${product.slug}`} className="w-full">
-                      <NeonButton variant="outline" className="w-full py-2 text-xs">
-                        <Eye size={14} /> View Details
-                      </NeonButton>
-                    </Link>
-                    <div className="flex gap-2">
-                       <a href={`https://wa.me/919073128151?text=Hi, I am interested in ${product.name}`} className="flex-1">
-                         <NeonButton variant="primary" className="w-full py-2 text-xs">
-                           <MessageSquare size={14} /> WhatsApp
-                         </NeonButton>
-                       </a>
-                       <a href="tel:9073128151" className="p-2 aspect-square rounded-full bg-white/5 text-slate-400 hover:text-neon-blue hover:bg-neon-blue/10 transition-all border border-white/10">
-                         <Phone size={14} />
-                       </a>
+                    <button 
+                      onClick={() => addToCart(product)}
+                      className="w-full py-2.5 px-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 bg-gradient-to-r from-neon-purple to-neon-blue text-white shadow-[0_0_20px_rgba(188,19,254,0.25)] hover:shadow-[0_0_30px_rgba(188,19,254,0.45)] hover:scale-[1.02]"
+                    >
+                      <ShoppingCart size={16} /> Add to Cart
+                    </button>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Link to={`/products/${product.slug}`} className="w-full">
+                        <NeonButton variant="outline" className="w-full py-2 text-xs">
+                          <Eye size={14} /> Details
+                        </NeonButton>
+                      </Link>
+                      <a href={`https://wa.me/919073128151?text=Hi, I want to purchase ${product.name}`} target="_top" rel="noopener noreferrer" className="w-full">
+                        <NeonButton variant="primary" className="w-full py-2 text-xs">
+                          <MessageSquare size={14} /> Buy Now
+                        </NeonButton>
+                      </a>
                     </div>
                   </div>
                 </div>

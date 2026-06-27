@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Camera, MessageSquare, Phone, Zap, ArrowRight } from 'lucide-react';
+import { Menu, X, Camera, MessageSquare, Phone, Zap, ArrowRight, ShoppingCart, Heart } from 'lucide-react';
 import { NeonButton } from '../ui/NeonButton';
-import { CurrencyToggle } from '../ui/CurrencyToggle';
+import { useCart } from '../../contexts/CartContext';
+import { useWishlist } from '../../contexts/WishlistContext';
 
 // @ts-ignore
 import mobileMenuBg from '../../assets/images/mobile_menu_bg_1782246902401.jpg';
@@ -12,6 +13,8 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { cartCount, setIsCartOpen } = useCart();
+  const { wishlistCount, setIsWishlistOpen } = useWishlist();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -29,16 +32,16 @@ export function Navbar() {
 
   return (
     <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-out ${scrolled ? 'pt-4' : 'pt-6'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className={`flex items-center justify-between rounded-2xl transition-all duration-500 ${scrolled ? 'bg-slate-950/80 backdrop-blur-2xl border border-white/10 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] py-3 px-4 sm:px-6' : 'bg-transparent py-2'}`}>
+      <div className="max-w-7xl mx-auto px-2 sm:px-6">
+        <div className={`flex items-center justify-between rounded-2xl transition-all duration-500 ${scrolled ? 'bg-slate-950/80 backdrop-blur-3xl border border-white/10 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] py-3 px-3 sm:px-6' : 'bg-transparent py-2 px-1 sm:px-0'}`}>
           <Link to="/" className="flex items-center gap-2 sm:gap-3 group relative z-50 shrink-0">
             <div className="relative">
               <div className="absolute inset-0 bg-neon-blue rounded-lg sm:rounded-xl blur-md opacity-50 group-hover:opacity-100 transition-opacity"></div>
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-neon-blue to-neon-purple flex items-center justify-center group-hover:scale-110 transition-transform duration-300 relative z-10 border border-white/20">
-                <Camera className="text-black" size={18} />
+                <Camera className="text-black" size={16} />
               </div>
             </div>
-            <span className="text-xl sm:text-2xl font-display font-bold tracking-tighter text-white">
+            <span className="text-lg sm:text-2xl font-display font-bold tracking-tighter text-white">
               DIGITAL <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-purple animate-gradient-bg inline-block sm:inline-block">POINT</span>
             </span>
           </Link>
@@ -61,7 +64,7 @@ export function Navbar() {
                      />
                   )}
                   <div className="absolute inset-0 bg-neon-blue/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-0 rounded-full"></div>
-                  <span className={`relative z-10 ${isActive ? 'text-neon-cyan' : 'text-slate-300 group-hover:text-white'}`}>
+                  <span className={`relative z-10 glitch-anim ${isActive ? 'text-neon-cyan' : 'text-slate-300 group-hover:text-white'}`}>
                     {link.name}
                   </span>
                 </Link>
@@ -70,7 +73,28 @@ export function Navbar() {
           </div>
 
           <div className="hidden md:flex items-center gap-4 relative z-50">
-            <CurrencyToggle />
+            <button 
+              onClick={() => setIsWishlistOpen(true)}
+              className="relative p-2 rounded-full hover:bg-white/10 transition-colors text-white"
+            >
+              <Heart size={20} />
+              {wishlistCount > 0 && (
+                <span className="absolute top-0 right-0 w-4 h-4 bg-pink-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full">
+                  {wishlistCount}
+                </span>
+              )}
+            </button>
+            <button 
+              onClick={() => setIsCartOpen(true)}
+              className="relative p-2 rounded-full hover:bg-white/10 transition-colors text-white"
+            >
+              <ShoppingCart size={20} />
+              {cartCount > 0 && (
+                <span className="absolute top-0 right-0 w-4 h-4 bg-neon-purple text-white text-[10px] font-bold flex items-center justify-center rounded-full">
+                  {cartCount}
+                </span>
+              )}
+            </button>
             <div className="hidden lg:flex items-center gap-2 mr-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_#22c55e]"></span>
                <span className="text-[10px] uppercase tracking-widest text-slate-300 font-bold">Online</span>
@@ -85,17 +109,38 @@ export function Navbar() {
           </div>
 
           {/* Mobile Toggle & Currency */}
-          <div className="md:hidden flex items-center gap-4 relative z-50">
-            <CurrencyToggle />
-            <button className="relative w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-white" onClick={() => setIsOpen(!isOpen)}>
+          <div className="md:hidden flex items-center gap-2 relative z-50">
+            <button 
+              onClick={() => setIsWishlistOpen(true)}
+              className="relative p-1.5 rounded-full hover:bg-white/10 transition-colors text-white"
+            >
+              <Heart size={18} />
+              {wishlistCount > 0 && (
+                <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-pink-500 text-white text-[9px] font-bold flex items-center justify-center rounded-full">
+                  {wishlistCount}
+                </span>
+              )}
+            </button>
+            <button 
+              onClick={() => setIsCartOpen(true)}
+              className="relative p-1.5 rounded-full hover:bg-white/10 transition-colors text-white"
+            >
+              <ShoppingCart size={18} />
+              {cartCount > 0 && (
+                <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-neon-purple text-white text-[9px] font-bold flex items-center justify-center rounded-full">
+                  {cartCount}
+                </span>
+              )}
+            </button>
+            <button className="relative w-9 h-9 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-white" onClick={() => setIsOpen(!isOpen)}>
               <AnimatePresence mode="wait">
                 {isOpen ? (
                   <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
-                    <X size={20} />
+                    <X size={18} />
                   </motion.div>
                 ) : (
                   <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
-                    <Menu size={20} />
+                    <Menu size={18} />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -112,7 +157,7 @@ export function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="fixed inset-0 z-40 bg-slate-950/95 backdrop-blur-2xl md:hidden pt-28 px-6 pb-6 overflow-y-auto flex flex-col justify-between"
+            className="fixed inset-0 z-40 bg-slate-950/95 backdrop-blur-3xl md:hidden pt-28 px-6 pb-6 overflow-y-auto flex flex-col justify-between"
           >
             {/* Absolute Background Image Layer */}
             <div className="absolute inset-0 z-0 opacity-20 pointer-events-none mix-blend-screen overflow-hidden">
@@ -208,7 +253,7 @@ export function Navbar() {
                 <span className="text-[10px] uppercase tracking-widest text-slate-500 font-mono font-bold">Instant Support Hub</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <a href="https://wa.me/919073128151" className="w-full">
+                <a href="https://wa.me/919073128151" target="_top" rel="noopener noreferrer" className="w-full">
                   <NeonButton variant="primary" className="w-full !py-4 shadow-[0_0_25px_rgba(0,240,255,0.25)] flex items-center justify-center gap-2 group text-base font-bold">
                     <MessageSquare size={20} className="group-hover:scale-110 transition-transform" /> direct WhatsApp
                   </NeonButton>

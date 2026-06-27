@@ -1,18 +1,24 @@
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { useState, useEffect } from 'react';
-import { ChevronLeft, MessageSquare, Phone, Truck, Shield, RefreshCcw, Camera } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { ChevronLeft, MessageSquare, Phone, Truck, Shield, RefreshCcw, Camera, ShoppingCart, Heart } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { NeonButton } from '../components/ui/NeonButton';
 import { GlassCard } from '../components/ui/GlassCard';
 import { TiltCard } from '../components/ui/TiltCard';
 import { ProductDetailSkeleton } from '../components/ui/Skeleton';
+import { LensFlare } from '../components/ui/LensFlare';
 import { useCurrency } from '../contexts/CurrencyContext';
+import { useCart } from '../contexts/CartContext';
+import { useWishlist } from '../contexts/WishlistContext';
 import { db } from '../lib/firebase';
 import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { Product } from '../types';
 
 export default function ProductDetail() {
   const { formatPrice } = useCurrency();
+  const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { slug } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
@@ -60,6 +66,20 @@ export default function ProductDetail() {
     );
   }
 
+  const priceTrendData = useMemo(() => {
+    if (!product) return [];
+    const basePrice = product.price;
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    return months.map((month, index) => {
+      // Simulate some market fluctuation around the current price
+      const variation = basePrice * (0.04 * Math.sin(index * 1.5) + 0.02 * Math.cos(index * 3));
+      return {
+        month,
+        price: Math.round(basePrice + variation)
+      };
+    });
+  }, [product]);
+
   return (
     <div className="pt-32 pb-24 px-6 bg-cyber-black">
       <div className="max-w-7xl mx-auto">
@@ -75,13 +95,27 @@ export default function ProductDetail() {
             animate={{ opacity: 1, scale: 1 }}
             className="flex flex-col gap-6"
           >
-            <div className="aspect-[4/5] rounded-3xl overflow-hidden glass-panel border-white/5 relative group">
+            <div 
+              className="aspect-[4/5] rounded-3xl overflow-hidden glass-panel border-white/5 relative group cursor-crosshair"
+              onMouseMove={(e) => {
+                const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                const x = ((e.clientX - left) / width) * 100;
+                const y = ((e.clientY - top) / height) * 100;
+                const img = e.currentTarget.querySelector('img');
+                if (img) img.style.transformOrigin = `${x}% ${y}%`;
+              }}
+              onMouseLeave={(e) => {
+                const img = e.currentTarget.querySelector('img');
+                if (img) img.style.transformOrigin = `center center`;
+              }}
+            >
               <img 
                 src={product.images[activeImage] || product.images[0]} 
                 alt={product.name} 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+                className="w-full h-full object-cover group-hover:scale-150 transition-transform duration-500 ease-out will-change-transform"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+              <LensFlare className="opacity-40 group-hover:opacity-95 group-hover:scale-105 transition-all duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
             </div>
             
             {product.images.length > 1 && (
@@ -131,23 +165,73 @@ export default function ProductDetail() {
                </div>
             </GlassCard>
 
+            {/* Price Trend Chart */}
+            <GlassCard className="mb-10 border-white/5 pb-8">
+              <h3 className="text-lg font-bold mb-6 border-b border-white/5 pb-2">Market Price Trend</h3>
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={priceTrendData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                    <XAxis 
+                      dataKey="month" 
+                      stroke="#475569" 
+                      fontSize={12} 
+                      tickLine={false}
+                      axisLine={false}
+                      dy={10}
+                    />
+                    <YAxis 
+                      stroke="#475569" 
+                      fontSize={12} 
+                      tickLine={false}
+                      axisLine={false}
+                      tickFormatter={(value) => `₹${(value / 1000)}k`}
+                    />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }}
+                      itemStyle={{ color: '#00f2ff' }}
+                      formatter={(value: number) => [formatPrice(value), 'Price']}
+                      labelStyle={{ color: '#94a3b8', marginBottom: '4px' }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="price" 
+                      stroke="#bc13fe" 
+                      strokeWidth={3}
+                      dot={{ r: 4, fill: '#00f2ff', strokeWidth: 0 }}
+                      activeDot={{ r: 6, fill: '#00f2ff', stroke: '#bc13fe', strokeWidth: 2 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </GlassCard>
+
             <div className="flex flex-col gap-4">
-              <a href={`https://wa.me/919073128151?text=Hi, I am interested in the ${product.brand} ${product.name}. Is it available?`} className="w-full">
-                <NeonButton variant="primary" className="w-full py-4 text-lg">
-                  <MessageSquare size={24} /> WhatsApp Inquiry
-                </NeonButton>
-              </a>
+              <div className="flex gap-4">
+                <button 
+                  onClick={() => addToCart(product)}
+                  className="flex-1 py-4 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 bg-gradient-to-r from-neon-purple to-neon-blue text-white shadow-[0_0_20px_rgba(188,19,254,0.25)] hover:shadow-[0_0_30px_rgba(188,19,254,0.45)] hover:scale-[1.02] text-lg"
+                >
+                  <ShoppingCart size={24} /> Add to Cart
+                </button>
+                <button 
+                  onClick={() => isInWishlist(product.id) ? removeFromWishlist(product.id) : addToWishlist(product)}
+                  className="w-16 h-16 shrink-0 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 bg-white/5 border border-white/10 hover:bg-white/10"
+                >
+                  <Heart size={24} className={isInWishlist(product.id) ? "fill-pink-500 text-pink-500" : "text-white"} />
+                </button>
+              </div>
               <div className="grid grid-cols-2 gap-4">
-                <a href="tel:9073128151">
-                  <NeonButton variant="outline" className="w-full">
-                    <Phone size={20} /> Call Now
+                <a href={`https://wa.me/919073128151?text=Hi, I want to purchase the ${product.brand} ${product.name}. Is it available?`} target="_top" rel="noopener noreferrer" className="w-full">
+                  <NeonButton variant="primary" className="w-full text-sm">
+                    <MessageSquare size={18} /> Buy Now
                   </NeonButton>
                 </a>
-                <Link to="/contact">
-                  <NeonButton variant="outline" className="w-full">
-                    Contact Us
+                <a href="tel:9073128151">
+                  <NeonButton variant="outline" className="w-full text-sm">
+                    <Phone size={18} /> Call Now
                   </NeonButton>
-                </Link>
+                </a>
               </div>
             </div>
 
@@ -174,8 +258,22 @@ export default function ProductDetail() {
               {relatedProducts.map((p) => (
                 <Link key={p.id} to={`/products/${p.slug}`} className="block h-full">
                   <TiltCard className="group border-white/5 hover:border-neon-blue/30 h-full p-0 flex flex-col cursor-pointer">
-                    <div className="aspect-video rounded-t-xl overflow-hidden bg-slate-900 border-b border-white/5">
-                       <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105" />
+                    <div 
+                      className="aspect-video rounded-t-xl overflow-hidden bg-slate-900 border-b border-white/5 relative"
+                      onMouseMove={(e) => {
+                        const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                        const x = ((e.clientX - left) / width) * 100;
+                        const y = ((e.clientY - top) / height) * 100;
+                        const img = e.currentTarget.querySelector('img');
+                        if (img) img.style.transformOrigin = `${x}% ${y}%`;
+                      }}
+                      onMouseLeave={(e) => {
+                        const img = e.currentTarget.querySelector('img');
+                        if (img) img.style.transformOrigin = `center center`;
+                      }}
+                    >
+                       <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 ease-out will-change-transform group-hover:scale-125" />
+                       <LensFlare className="opacity-25 group-hover:opacity-80 group-hover:scale-110 transition-all duration-500" />
                     </div>
                     <div className="p-6 flex flex-col flex-grow">
                       <div className="text-neon-blue text-[10px] font-bold uppercase tracking-widest mb-1">{p.brand}</div>
@@ -212,7 +310,7 @@ export default function ProductDetail() {
             </div>
           </div>
           <div className="flex gap-3 flex-1 lg:flex-none">
-            <a href={`https://wa.me/919073128151?text=Hi, I am interested in the ${product.brand} ${product.name}. Is it available?`} className="flex-1 lg:flex-none">
+            <a href={`https://wa.me/919073128151?text=Hi, I am interested in the ${product.brand} ${product.name}. Is it available?`} target="_top" rel="noopener noreferrer" className="flex-1 lg:flex-none">
               <NeonButton variant="primary" className="w-full lg:w-auto !px-6 !py-3 flex justify-center items-center h-full">
                 <MessageSquare size={18} className="mr-2" /> WhatsApp Chat
               </NeonButton>

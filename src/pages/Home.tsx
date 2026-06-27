@@ -22,6 +22,13 @@ import warrantyMacroSensor from '../assets/images/warranty_macro_sensor_17822460
 // @ts-ignore
 import abstractGlassOptics from '../assets/images/abstract_glass_optics_1782246052813.jpg';
 
+// @ts-ignore
+import premiumSelectionBg from '../assets/images/premium_selection_bg_1782567720100.jpg';
+// @ts-ignore
+import expertConsultationBg from '../assets/images/expert_consultation_bg_1782567737108.jpg';
+// @ts-ignore
+import directSupportBg from '../assets/images/direct_support_bg_1782567756096.jpg';
+
 function TiltCard({ children, className, depth = 50 }: { children: React.ReactNode, className?: string, depth?: number }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -70,6 +77,9 @@ function TiltCard({ children, className, depth = 50 }: { children: React.ReactNo
   );
 }
 
+import { SectionDivider } from '../components/ui/SectionDivider';
+import { LensFlare } from '../components/ui/LensFlare';
+
 export default function Home() {
   const featuredCategories = [
     { name: 'Cameras', image: catCamera, count: 12, slug: 'camera' },
@@ -83,16 +93,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center pt-20 overflow-hidden perspective-1000">
         {/* Animated Background */}
-        <div className="absolute inset-0 bg-slate-950" />
-        <div className="absolute inset-0 opacity-40 mix-blend-screen pointer-events-none">
-          <img 
-            src={heroBackgroundGlow} 
-            alt="Hero Background Glow" 
-            referrerPolicy="no-referrer"
-            className="w-full h-full object-cover scale-105 filter saturate-125 brightness-[0.45] contrast-110"
-          />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(2,6,23,0.1)_0%,rgba(2,6,23,0.95)_100%)]" />
-        </div>
+        <div className="absolute inset-0 bg-transparent" />
         <div className="absolute top-0 left-0 w-full h-full opacity-40 pointer-events-none">
            <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-neon-blue/20 rounded-full blur-[150px] animate-pulse" />
            <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-neon-purple/20 rounded-full blur-[150px] animate-[pulse_5s_ease-in-out_infinite] delay-700" />
@@ -108,31 +109,53 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-neon-blue/10 border border-neon-blue/20 text-neon-blue text-xs font-bold tracking-widest uppercase mb-6 shadow-[0_0_20px_rgba(0,240,255,0.2)]"
+              className="relative inline-flex items-center gap-2 px-6 py-2 rounded-full bg-slate-900/50 backdrop-blur-3xl border border-white/10 text-white text-xs font-bold tracking-widest uppercase mb-8 overflow-hidden group shadow-[0_0_30px_rgba(0,242,255,0.15)] hover:shadow-[0_0_30px_rgba(0,242,255,0.3)] transition-all duration-500"
             >
-              <Zap size={14} className="animate-pulse" /> Future of Imaging
+              <div className="absolute inset-0 bg-gradient-to-r from-neon-blue/20 via-neon-purple/20 to-neon-blue/20 animate-gradient-bg opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute -inset-[1px] bg-gradient-to-r from-neon-blue to-neon-purple opacity-30 blur-sm group-hover:opacity-60 transition-opacity duration-500 rounded-full"></div>
+              <div className="absolute inset-[1px] bg-cyber-black/40 backdrop-blur-3xl rounded-full"></div>
+              
+              <span className="relative z-10 flex items-center gap-2 font-black tracking-[0.2em]">
+                <Zap size={14} className="text-neon-cyan animate-pulse" /> 
+                <span className="glitch-anim inline-block text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Future of Imaging</span>
+              </span>
             </motion.div>
-            <h1 className="text-5xl md:text-7xl font-display font-bold leading-[1.1] mb-6 drop-shadow-2xl">
-              Professional Imaging <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue via-neon-cyan to-neon-purple animate-gradient-bg">
+            <motion.h1 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.8, ease: "easeOut" }}
+              className="gsap-reveal text-5xl md:text-7xl font-display font-bold leading-[1.1] mb-6 drop-shadow-2xl"
+            >
+              <span className="glitch-anim inline-block">Professional Imaging</span> <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue via-neon-cyan to-neon-purple animate-gradient-bg inline-block hover:scale-105 transition-transform cursor-default glitch-anim">
                 Technology
-              </span> for Creators
-            </h1>
-            <p className="text-lg text-slate-400 mb-10 max-w-lg leading-relaxed">
+              </span> <span className="glitch-anim inline-block">for Creators</span>
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9, duration: 0.8, ease: "easeOut" }}
+              className="gsap-reveal text-lg text-slate-400 mb-10 max-w-lg leading-relaxed"
+            >
               Premium cameras, lenses, drones, video switchers, and photography accessories from Digital Point. Elevate your production to cinema standards.
-            </p>
-            <div className="flex flex-wrap gap-4">
+            </motion.p>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1, duration: 0.8, ease: "easeOut" }}
+              className="flex flex-wrap gap-4"
+            >
               <Link to="/products">
                 <NeonButton variant="primary" className="hover:scale-105 transition-transform">
                   Explore Catalog <ChevronRight size={20} />
                 </NeonButton>
               </Link>
-              <a href="https://wa.me/919073128151">
+              <a href="https://wa.me/919073128151" target="_top" rel="noopener noreferrer">
                 <NeonButton variant="outline" className="hover:scale-105 transition-transform group">
                   <MessageSquare size={20} className="group-hover:animate-bounce" /> WhatsApp Inquiry
                 </NeonButton>
               </a>
-            </div>
+            </motion.div>
             
             <div className="mt-12 flex items-center gap-8 pt-8 border-t border-white/5">
               {[
@@ -160,14 +183,29 @@ export default function Home() {
             className="relative hidden lg:block perspective-1000"
           >
             <TiltCard depth={80} className="relative z-10 w-full aspect-square rounded-[3rem] overflow-hidden glass-panel border-white/10 p-2 group shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)]">
-              <img 
-                src={heroCinemaCamera} 
-                alt="Cinema Camera"
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover rounded-[2.5rem] group-hover:scale-110 transition-transform duration-1000 ease-out" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-              <div className="absolute bottom-10 left-10 right-10" style={{ transform: 'translateZ(100px)' }}>
+              <div 
+                className="w-full h-full rounded-[2.5rem] overflow-hidden relative"
+                onMouseMove={(e) => {
+                  const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                  const x = ((e.clientX - left) / width) * 100;
+                  const y = ((e.clientY - top) / height) * 100;
+                  const img = e.currentTarget.querySelector('img');
+                  if (img) img.style.transformOrigin = `${x}% ${y}%`;
+                }}
+                onMouseLeave={(e) => {
+                  const img = e.currentTarget.querySelector('img');
+                  if (img) img.style.transformOrigin = `center center`;
+                }}
+              >
+                <img 
+                  src={heroCinemaCamera} 
+                  alt="Cinema Camera"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover rounded-[2.5rem] group-hover:scale-125 transition-transform duration-500 ease-out will-change-transform" 
+                />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none rounded-[3rem]" />
+              <div className="absolute bottom-10 left-10 right-10 pointer-events-none" style={{ transform: 'translateZ(100px)' }}>
                 <div className="flex items-center gap-3 mb-3">
                   <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,1)]"></span>
                   <div className="text-neon-blue text-sm font-bold uppercase tracking-widest">Featured Gear</div>
@@ -182,8 +220,10 @@ export default function Home() {
         </div>
       </section>
 
+      <SectionDivider />
+
       {/* Featured Categories */}
-      <section className="py-24 bg-black relative overflow-hidden">
+      <section className="py-24 bg-transparent relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
@@ -193,8 +233,10 @@ export default function Home() {
             className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6"
           >
             <div>
-              <h2 className="text-4xl md:text-5xl font-display font-bold mb-4 drop-shadow-md">Master Every Angle</h2>
-              <p className="text-slate-400 text-lg">Premium equipment curated for every specialized creative workflow.</p>
+              <h2 className="gsap-reveal text-4xl md:text-5xl font-display font-bold mb-4 drop-shadow-md">
+                <span className="glitch-anim">Master Every Angle</span>
+              </h2>
+              <p className="gsap-reveal text-slate-400 text-lg">Premium equipment curated for every specialized creative workflow.</p>
             </div>
             <Link to="/categories" className="text-neon-blue font-bold flex items-center gap-2 hover:gap-3 transition-all shrink-0">
               View All Categories <ChevronRight size={20} />
@@ -212,14 +254,29 @@ export default function Home() {
                 className="perspective-1000"
               >
                 <TiltCard depth={40}>
-                  <GlassCard className="h-full hover:border-neon-blue/50 transition-all duration-300 shadow-xl hover:shadow-[0_0_30px_rgba(0,240,255,0.15)] group overflow-hidden">
-                    <div className="relative w-full h-44 mb-6 rounded-2xl overflow-hidden border border-white/10 group-hover:border-neon-blue/40 transition-colors duration-300 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] bg-slate-950 flex items-center justify-center" style={{ transform: "translateZ(30px)" }}>
+                  <GlassCard showAnimatedBorder={true} className="h-full hover:border-neon-blue/50 transition-all duration-300 shadow-xl hover:shadow-[0_0_30px_rgba(0,240,255,0.15)] group overflow-hidden">
+                    <div 
+                      className="relative w-full h-44 mb-6 rounded-2xl overflow-hidden border border-white/10 group-hover:border-neon-blue/40 transition-colors duration-300 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] bg-slate-950 flex items-center justify-center" 
+                      style={{ transform: "translateZ(30px)" }}
+                      onMouseMove={(e) => {
+                        const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                        const x = ((e.clientX - left) / width) * 100;
+                        const y = ((e.clientY - top) / height) * 100;
+                        const img = e.currentTarget.querySelector('img');
+                        if (img) img.style.transformOrigin = `${x}% ${y}%`;
+                      }}
+                      onMouseLeave={(e) => {
+                        const img = e.currentTarget.querySelector('img');
+                        if (img) img.style.transformOrigin = `center center`;
+                      }}
+                    >
                       <img 
                         src={cat.image} 
                         alt={cat.name} 
                         referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out brightness-90 group-hover:brightness-100"
+                        className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500 ease-out brightness-90 group-hover:brightness-100 will-change-transform"
                       />
+                      <LensFlare className="opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
                     </div>
                     <h3 className="text-2xl font-bold mb-2 tracking-tight" style={{ transform: "translateZ(20px)" }}>{cat.name}</h3>
@@ -235,8 +292,10 @@ export default function Home() {
         </div>
       </section>
 
+      <SectionDivider />
+
       {/* Brand Showcase - Why Digital Point */}
-      <section className="py-24 relative overflow-hidden bg-cyber-black">
+      <section className="py-24 relative overflow-hidden bg-transparent">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           <motion.div 
             initial={{ opacity: 0, x: -50, rotateY: -20 }}
@@ -249,7 +308,11 @@ export default function Home() {
             <TiltCard depth={60}>
               <div className="relative group perspective-1000">
                 <div className="absolute -inset-1 bg-gradient-to-r from-neon-blue/40 via-neon-purple/40 to-neon-cyan/40 rounded-[2.5rem] blur-xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
-                <div className="relative h-full bg-slate-950/90 backdrop-blur-3xl border border-white/20 hover:border-neon-blue/50 transition-all duration-500 rounded-[2rem] p-10 sm:p-14 overflow-hidden shadow-2xl">
+                <div className="relative h-full bg-slate-950/40 backdrop-blur-3xl border border-white/20 hover:border-neon-blue/50 transition-all duration-500 rounded-[2rem] p-10 sm:p-14 overflow-hidden shadow-2xl">
+                  
+                  {/* Glowing Laser Scan Line */}
+                  <div className="absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-neon-cyan/60 to-transparent blur-[1.5px] animate-scan-sweep pointer-events-none z-20" />
+                  <div className="absolute inset-x-0 h-24 bg-gradient-to-b from-neon-cyan/5 to-transparent opacity-30 animate-scan-sweep pointer-events-none z-15" />
                   
                   {/* Subtle Grid Background */}
                   <div className="absolute inset-0 bg-white/5 opacity-10 brightness-100 mix-blend-overlay"></div>
@@ -267,8 +330,12 @@ export default function Home() {
                   </div>
 
                   <div className="relative z-10 flex flex-col items-center sm:items-start text-center sm:text-left h-full transform-style-3d">
-                    <div style={{ transform: "translateZ(40px)" }} className="w-20 h-20 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-neon-blue/20 to-neon-purple/20 border border-neon-blue/30 flex items-center justify-center mb-8 sm:mb-12 shadow-[0_0_40px_rgba(0,240,255,0.2)] group-hover:scale-110 transition-transform duration-700 ease-out">
-                      <Shield className="text-neon-blue" size={48} strokeWidth={1.2} />
+                    <div style={{ transform: "translateZ(40px)" }} className="w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-neon-blue/10 via-neon-purple/5 to-neon-cyan/10 border border-white/10 flex items-center justify-center mb-8 sm:mb-12 shadow-[0_0_40px_rgba(0,240,255,0.15)] group-hover:shadow-[0_0_50px_rgba(0,240,255,0.4)] group-hover:scale-105 transition-all duration-700 ease-out relative">
+                      {/* Rotating HUD Concentric Rings */}
+                      <div className="absolute -inset-2 rounded-full border border-dashed border-neon-blue/40 animate-spin-slow pointer-events-none"></div>
+                      <div className="absolute -inset-4 rounded-full border border-dotted border-neon-purple/30 animate-spin-reverse-slow pointer-events-none"></div>
+                      <div className="absolute inset-1 rounded-full border border-neon-cyan/10 pointer-events-none animate-pulse"></div>
+                      <Shield className="text-neon-cyan relative z-10 drop-shadow-[0_0_15px_rgba(0,255,242,0.6)] animate-pulse" size={44} strokeWidth={1.2} />
                     </div>
                     
                     <div className="space-y-6" style={{ transform: "translateZ(30px)" }}>
@@ -283,14 +350,14 @@ export default function Home() {
 
                     {/* Trust badges/indicators */}
                     <div style={{ transform: "translateZ(20px)" }} className="mt-12 sm:mt-16 flex items-center justify-center sm:justify-start gap-6 sm:gap-10 border-t border-white/10 pt-8 sm:pt-10 w-full">
-                      <div className="flex flex-col items-center sm:items-start group/badge">
-                        <div className="text-3xl font-bold text-white group-hover/badge:text-neon-blue transition-colors">100%</div>
-                        <div className="text-xs text-slate-500 uppercase tracking-widest font-bold mt-1">Genuine</div>
+                      <div className="flex flex-col items-center sm:items-start group/badge relative">
+                        <div className="text-3xl font-bold text-white group-hover/badge:text-neon-blue transition-colors drop-shadow-[0_0_8px_rgba(0,242,255,0.3)] duration-300">100%</div>
+                        <div className="text-xs text-slate-500 uppercase tracking-widest font-bold mt-1 group-hover/badge:text-neon-blue/80 transition-colors">Genuine</div>
                       </div>
                       <div className="w-px h-12 bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
-                      <div className="flex flex-col items-center sm:items-start group/badge">
-                        <div className="text-3xl font-bold text-white group-hover/badge:text-neon-purple transition-colors">24/7</div>
-                        <div className="text-xs text-slate-500 uppercase tracking-widest font-bold mt-1">Support</div>
+                      <div className="flex flex-col items-center sm:items-start group/badge relative">
+                        <div className="text-3xl font-bold text-white group-hover/badge:text-neon-purple transition-colors drop-shadow-[0_0_8px_rgba(188,19,254,0.3)] duration-300">24/7</div>
+                        <div className="text-xs text-slate-500 uppercase tracking-widest font-bold mt-1 group-hover/badge:text-neon-purple/80 transition-colors">Support</div>
                       </div>
                     </div>
                   </div>
@@ -309,12 +376,15 @@ export default function Home() {
             transition={{ duration: 1 }}
             className="order-1 lg:order-2"
           >
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-10 leading-tight">Why Creators Choose <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple animate-gradient-bg">Digital Point</span></h2>
+            <h2 className="gsap-reveal text-4xl md:text-5xl font-display font-bold mb-10 leading-tight">
+              <span className="glitch-anim">Why Creators Choose</span> <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple animate-gradient-bg glitch-anim inline-block">Digital Point</span>
+            </h2>
             <div className="space-y-10">
                 {[
-                  { icon: <Award className="text-luxury-gold" size={28} />, title: "Premium Selection", desc: "Hand-picked inventory from the world's leading imaging brands like Sony, DJI, and RED." },
-                  { icon: <Zap className="text-neon-purple" size={28} />, title: "Expert Consultation", desc: "Technical advice from professionals who understand cinema and photography workflows." },
-                  { icon: <Phone className="text-neon-cyan" size={28} />, title: "Direct Support", desc: "No bots. Real human conversation for inquiries, stock checks, and custom orders." }
+                  { icon: <Award className="text-luxury-gold" size={28} />, title: "Premium Selection", desc: "Hand-picked inventory from the world's leading imaging brands like Sony, DJI, and RED.", bgImage: premiumSelectionBg },
+                  { icon: <Zap className="text-neon-purple" size={28} />, title: "Expert Consultation", desc: "Technical advice from professionals who understand cinema and photography workflows.", bgImage: expertConsultationBg },
+                  { icon: <Phone className="text-neon-cyan" size={28} />, title: "Direct Support", desc: "No bots. Real human conversation for inquiries, stock checks, and custom orders.", bgImage: directSupportBg }
                 ].map((item, idx) => (
                   <motion.div 
                     key={idx}
@@ -322,25 +392,26 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: idx * 0.2, duration: 0.6 }}
-                    className="relative flex flex-col sm:flex-row gap-6 p-6 sm:p-8 rounded-3xl border border-white/5 bg-slate-950/40 backdrop-blur-md overflow-hidden group hover:border-neon-blue/30 hover:bg-slate-950/60 transition-all duration-500 shadow-xl"
+                    className="relative flex flex-col sm:flex-row gap-6 p-6 sm:p-8 rounded-3xl border border-white/10 bg-slate-950/60 backdrop-blur-3xl overflow-hidden group hover:border-neon-cyan/40 hover:shadow-[0_0_30px_rgba(0,242,255,0.15)] transition-all duration-500"
                   >
                     {/* Background abstract image overlay */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-15 transition-opacity duration-700 pointer-events-none mix-blend-screen">
+                    <div className="absolute inset-0 opacity-100 pointer-events-none">
                       <img 
-                        src={abstractGlassOptics} 
-                        alt="Decor" 
+                        src={item.bgImage} 
+                        alt={item.title} 
                         referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700 ease-out" 
+                        className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700 ease-out filter contrast-125 saturate-150 brightness-[0.85] group-hover:brightness-100" 
                       />
+                      <div className="absolute inset-0 bg-gradient-to-r from-cyber-black/90 via-cyber-black/50 to-cyber-black/20 group-hover:via-cyber-black/30 transition-all duration-700"></div>
                     </div>
                     
-                    <div className="w-16 h-16 rounded-2xl bg-slate-900 shadow-[0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center shrink-0 border border-white/5 group-hover:border-neon-blue/30 group-hover:scale-110 transition-all duration-500 relative overflow-hidden z-10">
-                      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="w-16 h-16 rounded-2xl bg-slate-900/80 backdrop-blur-3xl shadow-[0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center shrink-0 border border-white/10 group-hover:border-neon-cyan/50 group-hover:shadow-[0_0_20px_rgba(0,242,255,0.3)] group-hover:scale-110 transition-all duration-500 relative overflow-hidden z-10">
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                       {item.icon}
                     </div>
                     <div className="relative z-10">
-                      <h4 className="text-2xl font-bold mb-2 text-white group-hover:text-neon-cyan transition-colors">{item.title}</h4>
-                      <p className="text-slate-400 text-base sm:text-lg leading-relaxed">{item.desc}</p>
+                      <h4 className="text-2xl font-bold mb-2 text-white group-hover:text-neon-cyan transition-colors drop-shadow-md">{item.title}</h4>
+                      <p className="text-slate-300 text-base sm:text-lg leading-relaxed drop-shadow-md">{item.desc}</p>
                     </div>
                   </motion.div>
                 ))}
@@ -354,8 +425,10 @@ export default function Home() {
         </div>
       </section>
 
+      <SectionDivider />
+
       {/* Reviews Section */}
-      <section className="py-24 bg-black relative overflow-hidden">
+      <section className="py-24 bg-transparent relative overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute top-1/4 left-0 w-96 h-96 bg-neon-blue/5 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-neon-purple/5 rounded-full blur-[100px] pointer-events-none" />
@@ -374,7 +447,7 @@ export default function Home() {
             <p className="text-slate-400 text-lg max-w-2xl mx-auto mb-6">
               Don't just take our word for it. Hear what professional creators have to say about their experience with Digital Point.
             </p>
-            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-slate-900/50 border border-white/10 backdrop-blur-xl">
+            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-slate-900/50 border border-white/10 backdrop-blur-3xl">
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4, 5].map((i) => (
                   <div key={i} className="w-10 h-10 rounded-full border-2 border-slate-900 bg-gradient-to-br from-neon-blue/40 to-neon-purple/40 flex items-center justify-center text-xs font-bold text-white z-10 relative overflow-hidden">
@@ -439,7 +512,7 @@ export default function Home() {
                 className="perspective-1000"
               >
                 <TiltCard depth={40}>
-                  <div className="relative h-full bg-slate-900/50 backdrop-blur-xl border border-white/10 hover:border-neon-blue/30 transition-all duration-500 rounded-3xl p-8 group">
+                  <div className="relative h-full bg-slate-900/50 backdrop-blur-3xl border border-white/10 hover:border-neon-blue/30 transition-all duration-500 rounded-3xl p-8 group">
                     <div className="absolute top-6 right-8 text-white/5 group-hover:text-neon-blue/10 transition-colors duration-500 transform group-hover:scale-110" style={{ transform: "translateZ(10px)" }}>
                       <Quote size={80} />
                     </div>
@@ -473,8 +546,10 @@ export default function Home() {
         </div>
       </section>
 
+      <SectionDivider />
+
       {/* Inquiry CTA */}
-      <section className="py-32 px-6 relative overflow-hidden bg-slate-950">
+      <section className="py-32 px-6 relative overflow-hidden bg-transparent">
         {/* Animated grid background */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#00f0ff0a_1px,transparent_1px),linear-gradient(to_bottom,#00f0ff0a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]"></div>
         
@@ -486,7 +561,7 @@ export default function Home() {
           className="max-w-5xl mx-auto rounded-[3rem] bg-gradient-to-br from-neon-blue/30 via-cyber-navy to-neon-purple/30 p-[1px] relative z-10 shadow-[0_0_80px_rgba(0,240,255,0.15)]"
         >
           <TiltCard depth={30}>
-            <div className="bg-cyber-black/95 rounded-[3rem] p-12 md:p-20 text-center backdrop-blur-3xl overflow-hidden relative">
+            <div className="bg-cyber-black/40 rounded-[3rem] p-12 md:p-20 text-center backdrop-blur-3xl overflow-hidden relative">
               {/* Internal glow */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-lg max-h-lg bg-neon-blue/10 blur-[100px] rounded-full pointer-events-none"></div>
 
@@ -496,13 +571,13 @@ export default function Home() {
                   Our specialists are ready to help you find the perfect lens, body, or drone for your next project. Get a personalized quote today.
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-6">
-                  <a href="https://wa.me/919073128151">
+                  <a href="https://wa.me/919073128151" target="_top" rel="noopener noreferrer">
                     <NeonButton variant="primary" className="px-10 py-5 text-lg w-full sm:w-auto shadow-[0_0_30px_rgba(0,240,255,0.3)] hover:shadow-[0_0_50px_rgba(0,240,255,0.5)] transition-all">
                       <MessageSquare size={24} className="mr-2" /> WhatsApp Us Now
                     </NeonButton>
                   </a>
                   <Link to="/contact">
-                    <NeonButton variant="outline" className="px-10 py-5 text-lg w-full sm:w-auto bg-black/50 backdrop-blur-sm hover:bg-white/5 transition-all">
+                    <NeonButton variant="outline" className="px-10 py-5 text-lg w-full sm:w-auto bg-black/40 backdrop-blur-3xl hover:bg-white/10 transition-all border border-white/10">
                       Submit Inquiry Form
                     </NeonButton>
                   </Link>
