@@ -11,9 +11,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Google AI Studio App</title>
-    <!-- GSAP & particles.js CDNs -->
+    <!-- GSAP, ScrollTrigger, Lenis & particles.js CDNs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   </head>
   <body>
@@ -25,6 +26,43 @@
 
     <script>
       window.addEventListener('DOMContentLoaded', (event) => {
+        // Initialize Lenis Smooth Scroll
+        if (typeof Lenis !== 'undefined') {
+          const lenis = new Lenis({
+            duration: 1.4,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // premium exponential easing
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 0.85, // gentler mouse speed for luxury gliding feel
+            smoothTouch: false, // native touch on mobile for best UX
+            touchMultiplier: 1.5,
+          });
+
+          window.lenis = lenis;
+
+          // Sync ScrollTrigger with Lenis
+          lenis.on('scroll', () => {
+            if (typeof ScrollTrigger !== 'undefined') {
+              ScrollTrigger.update();
+            }
+          });
+
+          // Sync GSAP's ticker with Lenis requestAnimationFrame
+          if (typeof gsap !== 'undefined') {
+            gsap.ticker.add((time) => {
+              lenis.raf(time * 1000);
+            });
+            gsap.ticker.lagSmoothing(0);
+          } else {
+            function raf(time) {
+              lenis.raf(time);
+              requestAnimationFrame(raf);
+            }
+            requestAnimationFrame(raf);
+          }
+        }
+
         function initParticles() {
           if (typeof particlesJS !== 'undefined') {
             particlesJS('particles-js', {

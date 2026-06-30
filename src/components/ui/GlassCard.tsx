@@ -24,24 +24,24 @@ export function GlassCard({ children, className = '', delay = 0, showAnimatedBor
     >
       {/* Animated laser borders on hover */}
       {showAnimatedBorder && (
-        <>
+        <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20">
           {/* Top Border */}
-          <div className="absolute top-0 left-0 w-full h-[2px] overflow-hidden pointer-events-none z-20">
+          <div className="absolute top-0 left-0 w-full h-[2px] overflow-hidden">
             <div className="w-full h-full bg-gradient-to-r from-transparent via-neon-cyan to-transparent animate-border-slide-top" />
           </div>
           {/* Right Border */}
-          <div className="absolute top-0 right-0 w-[2px] h-full overflow-hidden pointer-events-none z-20">
+          <div className="absolute top-0 right-0 w-[2px] h-full overflow-hidden">
             <div className="w-full h-full bg-gradient-to-b from-transparent via-neon-purple to-transparent animate-border-slide-right [animation-delay:0.75s]" />
           </div>
           {/* Bottom Border */}
-          <div className="absolute bottom-0 left-0 w-full h-[2px] overflow-hidden pointer-events-none z-20">
+          <div className="absolute bottom-0 left-0 w-full h-[2px] overflow-hidden">
             <div className="w-full h-full bg-gradient-to-r from-transparent via-neon-cyan to-transparent animate-border-slide-bottom [animation-delay:1.5s]" />
           </div>
           {/* Left Border */}
-          <div className="absolute top-0 left-0 w-[2px] h-full overflow-hidden pointer-events-none z-20">
+          <div className="absolute top-0 left-0 w-[2px] h-full overflow-hidden">
             <div className="w-full h-full bg-gradient-to-b from-transparent via-neon-purple to-transparent animate-border-slide-left [animation-delay:2.25s]" />
           </div>
-        </>
+        </div>
       )}
 
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

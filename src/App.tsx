@@ -22,14 +22,44 @@ import AdminDashboard from './admin/Dashboard';
 // @ts-expect-error image module
 import futuristicCameraBg from './assets/images/futuristic_camera_bg_1782570405196.jpg';
 
-function ScrollToTop() {
+function ScrollManager() {
   const { pathname } = useLocation();
+
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
+    const lenis = (window as any).lenis;
+    if (!lenis) {
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    // Scroll to top immediately on route change
+    lenis.scrollTo(0, { immediate: true });
+    
+    // Resize lenis on transition to ensure correct page heights
+    const timer1 = setTimeout(() => lenis.resize(), 50);
+    const timer2 = setTimeout(() => lenis.resize(), 300);
+    const timer3 = setTimeout(() => lenis.resize(), 800); // cover slower mounts/renders
+
+    // Setup MutationObserver to watch DOM size changes (infinite scroll, expanding components)
+    const observer = new MutationObserver(() => {
+      lenis.resize();
     });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style', 'class']
+    });
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      observer.disconnect();
+    };
   }, [pathname]);
+
   return null;
 }
 
@@ -105,7 +135,7 @@ export default function App() {
       <CartProvider>
         <WishlistProvider>
           <Router>
-            <ScrollToTop />
+            <ScrollManager />
             <Layout />
           </Router>
         </WishlistProvider>

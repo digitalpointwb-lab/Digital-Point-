@@ -135,9 +135,9 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9, duration: 0.8, ease: "easeOut" }}
-              className="gsap-reveal text-lg text-slate-400 mb-10 max-w-lg leading-relaxed"
+              className="gsap-reveal text-lg text-slate-100 font-semibold mb-10 max-w-lg leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"
             >
-              Premium cameras, lenses, drones, video switchers, and photography accessories from Digital Point. Elevate your production to cinema standards.
+              Premium <span className="text-neon-cyan font-bold drop-shadow-[0_0_10px_rgba(0,242,255,0.6)]">cameras</span>, <span className="text-neon-blue font-bold drop-shadow-[0_0_10px_rgba(0,102,255,0.6)]">lenses</span>, <span className="text-neon-purple font-bold drop-shadow-[0_0_10px_rgba(188,19,254,0.6)]">drones</span>, video switchers, and photography accessories from <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue via-neon-cyan to-neon-purple font-extrabold drop-shadow-[0_0_8px_rgba(0,242,255,0.3)]">Digital Point</span>. Elevate your production to cinema standards.
             </motion.p>
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
